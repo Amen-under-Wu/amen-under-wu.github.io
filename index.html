@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="description" content="占卜网页原型">
+        <meta name="keywords" content="周易,占卜,卜筮">
+        <meta name="author" content="待定">
+        <meta charset="utf-8">
+        <style type="text/css">
+            .button {
+                background-color: #f24030;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                border-radius: 10px;
+            }
+            .button:hover {
+                background-color: #b0372c;
+            }
+            #curtain {
+                background-color: white;
+                width: 200px;
+                height: 0px;
+                position: absolute;
+                top: 0px;
+                
+            }
+            @keyframes showResult {
+                from {height: 200px;}
+                to {height: 0px;}
+            }
+            @keyframes showOutput {
+                0% {opacity: 0;}
+                50% {opacity: 0;}
+                100% {opacity: 1;}
+            }
+        </style>
+        <script>
+            
+        </script>
+        <title>占卜页(demo)</title>
+    </head>
+    <body id="body">
+        <script>
+            var x_amount = 0;
+            var o_amount = 0;
+            var shaoyang_amout = 0;
+
+            function orig() {
+                return Math.floor(Math.random() * 4);
+            }
+            function addYao(result) {
+                var getYao = orig;
+                result[result.length] = getYao();
+            }
+            function displayResult(result) {
+                document.getElementById("resultBox").innerHTML = "";
+                for(var i = 0; i < result.length; i++) {
+                    var yao;
+                    switch(result[i]) {
+                        case 0:
+                            yao = "- - x<br>";
+                            
+                            break;
+                        case 1:
+                            yao = "---<br>";
+                            
+                            break;
+                        case 2:
+                            yao = "- -<br>";
+                            break;
+                        case 3:
+                            yao = "--- o<br>";
+                            
+                            break;
+                        default:
+                            break;
+                    }
+                    document.getElementById("resultBox").innerHTML = yao + document.getElementById("resultBox").innerHTML;
+                }
+            }
+            function analyzeResult(result) {
+                for(var i = 0; i < 6; i++) {
+                    
+                    switch(result[i]) {
+                        case 0:
+                            
+                            x_amount += 1;
+                            break;
+                        case 1:
+                            
+                            shaoyang_amout += 1;
+                            break;
+                        case 2:
+                            
+                            break;
+                        case 3:
+                            
+                            o_amount += 1;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            
+            var result = [];
+            function mainFunc() {
+                if(result.length < 6) {
+                    addYao(result);
+                    displayResult(result);
+                    if (result.length == 6) document.getElementById("mainButton").innerHTML = "查看结果(6/6)";
+                    else document.getElementById("mainButton").innerHTML = "继续占卜(" + result.length + "/6)"
+                    return;
+                }
+                
+                
+                analyzeResult(result);
+                
+                var o;
+                switch(x_amount + o_amount) {
+                    case 0:
+                        o = "【本爻辞】";
+                        break;
+                    case 1:
+                        o = "【变爻辞】";
+                        break;
+                    case 2:
+                        if (x_amount == o_amount) {
+                            o = "【阴动爻辞】";
+                        }
+                        else {
+                            o = "【上动爻辞】";
+                        }
+                        break;
+                    case 3:
+                        if (x_amount == 0 || o_amount == 0) {
+                            o = "【中间动爻辞】";
+                        }
+                        else {
+                            o = "【異动爻辞】";
+                        }
+                        break;
+                    case 4:
+                        if (shaoyang_amout == 1) {
+                            o = "【阳静爻辞】";
+                        }
+                        else {
+                            o = "【下静爻辞】";
+                        }
+                        break;
+                    case 5:
+                        o = "【静爻辞】";
+                        break;
+                    case 6:
+                        if (x_amount == 0 || o_amount == 0) {
+                            o = "【变卦彖辞】";
+                        }
+                        else {
+                            o = "【用爻辞】";
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                document.getElementById("outputBox").innerHTML = o;
+                
+                document.getElementById("body").removeChild(document.getElementById("mainButton"));
+            }
+		</script>
+        <button id="mainButton" class="button" onclick="mainFunc()">神奇的按钮</button>
+        <div id="resultBox" style="font-size: x-large;">
+            会有神奇的事情发生。
+        </div>
+        
+        <div id="outputBox">
+        </div>
+    </body>
+</html>

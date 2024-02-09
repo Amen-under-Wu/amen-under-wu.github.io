@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta name="description" content="占卜网页原型">
-        <meta name="keywords" content="周易,占卜,卜筮">
+        <meta name="keywords" content="周易,占卜,卜筮, 起卦, 大衍筮法">
         <meta name="author" content="待定">
         <meta charset="utf-8">
         <style type="text/css">
@@ -199,7 +199,7 @@
             }
 
             function displayResult(result) {
-                var resultTable = "<table style=\"text-align: center; margin: auto\"><tbody style=\"text-align: center;\">";
+                var resultTable = "";
                 for(var i = 0; i < result.length; i++) {
                     var yao;
                     switch(result[i]) {
@@ -221,11 +221,11 @@
                         default:
                             break;
                     }
-                    resultTable = resultTable + "<tr><td></td></tr>" + yao;
+                    resultTable = "<tr><td></td></tr>" + yao + resultTable;
                     
                     
                 }
-                document.getElementById("resultBox").innerHTML = resultTable + "</tbody></table>";
+                document.getElementById("resultBox").innerHTML = "<table style=\"text-align: center; margin: auto\"><tbody style=\"text-align: center;\">" + resultTable + "</tbody></table>";
             }
             function analyzeResult(result) {
                 for(var i = 0; i < 6; i++) {

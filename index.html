@@ -109,7 +109,7 @@
         </script>
         <title>占卜页(demo)</title>
     </head>
-    <body id="body">
+    <body id="body" style="text-align: center;">
         <script>
             var x_amount = 0;
             var o_amount = 0;
@@ -118,35 +118,114 @@
             function orig() {
                 return Math.floor(Math.random() * 4);
             }
+
+            function shifa01() {
+                function move(a, b, n) {
+                    a.val -= n;
+                    b.val += n;
+                }
+                var an = {up:{val:0}, middle:{val:50}, left:{val:0}, right:{val:0}, hand:{val:0}, down:{val:0}};
+                move(an.middle, an.up, 1);
+                for (let i = 0; i < 3; ++i) {
+                    move(an.middle, an.left, 2);
+                    move(an.middle, an.right, 2);
+                    while (an.middle.val > 0) {
+                        move(an.middle, (Math.floor(Math.random() * 2) ? an.left : an.right), 1);
+                    }
+                    //alert(an.left.val);
+                    //alert(an.right.val);
+                    move(an.left, an.hand, 1);
+                    move(an.left, an.hand, (an.left.val - 1) % 4 + 1);
+                    move(an.right, an.hand, (an.right.val - 1) % 4 + 1);
+                    move(an.left, an.middle, an.left.val);
+                    move(an.right, an.middle, an.right.val);
+                    //alert(an.middle.val);
+                    move(an.hand, an.down, an.hand.val);
+                }
+                return an.middle.val / 4 - 6;
+            }
+
+            function shifa02() {
+                let r = 0;
+                function move(a, b, n) {
+                    a.val -= n;
+                    b.val += n;
+                }
+                var an = {up:{val:0}, middle:{val:50}, left:{val:0}, right:{val:0}, hand:{val:0}, down:{val:0}};
+                move(an.middle, an.up, 1);
+                for (let i = 0; i < 3; ++i) {
+                    move(an.middle, an.hand, 1);
+                    move(an.middle, an.left, 2);
+                    move(an.middle, an.right, 2);
+                    while (an.middle.val > 0) {
+                        move(an.middle, (Math.floor(Math.random() * 2) ? an.left : an.right), 1);
+                    }
+                    
+                    
+                    move(an.left, an.hand, (an.left.val - 1) % 4 + 1);
+                    move(an.right, an.hand, (an.right.val - 1) % 4 + 1);
+                    if (an.hand.val == 4 || an.hand.val == 5) {
+                        r += 3;
+                    }
+                    else if (an.hand.val == 8 || an.hand.val == 9) {
+                        r += 2;
+                    }
+                    else {
+                        alert("error");
+                    }
+
+                    move(an.left, an.middle, an.left.val);
+                    move(an.right, an.middle, an.right.val);
+                    
+                    move(an.hand, an.down, an.hand.val);
+                }
+                return r - 6;
+            }
+
+            function coin() {
+                var r = 0;
+                for (let i = 0; i < 3; ++i) {
+                    r += Math.floor(Math.random() * 2);
+                }
+                return r;
+            }
+
+            var qiguaMethod = [orig, shifa01, shifa02, coin]
+            var method = 0;
+
             function addYao(result) {
-                var getYao = orig;
+                var getYao = qiguaMethod[method];
                 result[result.length] = getYao();
             }
+
             function displayResult(result) {
-                document.getElementById("resultBox").innerHTML = "";
+                var resultTable = "<table style=\"text-align: center; margin: auto\"><tbody style=\"text-align: center;\">";
                 for(var i = 0; i < result.length; i++) {
                     var yao;
                     switch(result[i]) {
                         case 0:
-                            yao = "- - x<br>";
+                            yao = "<tr><td style=\"background:black;\">&emsp;&emsp;</td><td>&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td>x</td></tr>";
                             
                             break;
                         case 1:
-                            yao = "---<br>";
+                            yao = "<tr><td style=\"background:black;\">&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td></td></tr>";
                             
                             break;
                         case 2:
-                            yao = "- -<br>";
+                            yao = "<tr><td style=\"background:black;\">&emsp;&emsp;</td><td>&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td></td></tr>";
                             break;
                         case 3:
-                            yao = "--- o<br>";
+                            yao = "<tr><td style=\"background:black;\">&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td>o</td></tr>";
                             
                             break;
                         default:
                             break;
                     }
-                    document.getElementById("resultBox").innerHTML = yao + document.getElementById("resultBox").innerHTML;
+                    resultTable = resultTable + "<tr><td></td></tr>" + yao;
+                    
+                    
                 }
+                document.getElementById("resultBox").innerHTML = resultTable + "</tbody></table>";
             }
             function analyzeResult(result) {
                 for(var i = 0; i < 6; i++) {
@@ -221,11 +300,15 @@
             }
             var result = [];
             function mainFunc() {
+                if(result.length == 0) {
+                    method = document.forms["form"]["qiguaMethod"].value;
+                    document.getElementById("body").removeChild(document.getElementById("form"));
+                }
                 if(result.length < 6) {
                     addYao(result);
                     displayResult(result);
                     if (result.length == 6) document.getElementById("mainButton").innerHTML = "查看结果(6/6)";
-                    else document.getElementById("mainButton").innerHTML = "继续占卜(" + result.length + "/6)"
+                    else document.getElementById("mainButton").innerHTML = "继续起卦(" + result.length + "/6)"
                     return;
                 }
                 
@@ -292,10 +375,21 @@
                 
                 document.getElementById("body").removeChild(document.getElementById("mainButton"));
             }
+            
 		</script>
-        <button id="mainButton" class="button" onclick="mainFunc()">神奇的按钮</button>
-        <div id="resultBox" style="font-size: x-large;">
-            会有神奇的事情发生。
+        <form id="form">
+            <label for="qiguaMethod">起卦方法：</label>
+            <select id="qiguaMethod" name="qiguaMethod">
+                <option value="0">赛博等概率起卦法</option>
+                <option value="1">大衍筮法01（取除以4之商）</option>
+                <option value="2">大衍筮法02（累加3或2）</option>
+                <option value="3">铜钱起卦法</option>
+            </select>
+        </form>
+        <br>
+        <button id="mainButton" class="button" onclick="mainFunc()">开始起卦(0/6)</button>
+        <div id="resultBox" style="font-size: x-large; text-align: center;">
+            结果将在此显示。
         </div>
         
         <div id="outputBox">

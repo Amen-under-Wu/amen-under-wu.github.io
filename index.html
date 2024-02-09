@@ -204,28 +204,28 @@
                     var yao;
                     switch(result[i]) {
                         case 0:
-                            yao = "<tr><td style=\"background:black;\">&emsp;&emsp;</td><td>&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td>x</td></tr>";
+                            yao = "<tr style=\"font-size:15px;\"><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td>&emsp;&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td>X</td></tr>";
                             
                             break;
                         case 1:
-                            yao = "<tr><td style=\"background:black;\">&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td></td></tr>";
+                            yao = "<tr style=\"font-size:15px;\"><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td></td></tr>";
                             
                             break;
                         case 2:
-                            yao = "<tr><td style=\"background:black;\">&emsp;&emsp;</td><td>&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td></td></tr>";
+                            yao = "<tr style=\"font-size:15px;\"><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td>&emsp;&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td></td></tr>";
                             break;
                         case 3:
-                            yao = "<tr><td style=\"background:black;\">&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;</td><td>o</td></tr>";
+                            yao = "<tr style=\"font-size:15px;\"><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td>O</td></tr>";
                             
                             break;
                         default:
                             break;
                     }
-                    resultTable = "<tr><td></td></tr>" + yao + resultTable;
+                    resultTable = "<tr style=\"font-size:10px;\"><td><br></td></tr>" + yao + resultTable;
                     
                     
                 }
-                document.getElementById("resultBox").innerHTML = "<table style=\"text-align: center; margin: auto\"><tbody style=\"text-align: center;\">" + resultTable + "</tbody></table>";
+                document.getElementById("resultBox").innerHTML = "<table style=\"text-align: center; margin: auto;\"><tbody style=\"text-align: center;\">" + resultTable + "</tbody></table>";
             }
             function analyzeResult(result) {
                 for(var i = 0; i < 6; i++) {

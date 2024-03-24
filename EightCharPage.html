@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="description" content="八字排盘网页原型">
+        <meta name="keywords" content="八字,排盘,算命">
+        <meta name="author" content="待定">
+        <meta charset="utf-8">
+        <style type="text/css">
+            .button {
+                background-color: #f24030;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                border-radius: 10px;
+            }
+            .button:hover {
+                background-color: #b0372c;
+            }
+            #curtain {
+                background-color: white;
+                width: 200px;
+                height: 0px;
+                position: absolute;
+                top: 0px;
+                
+            }
+        </style>
+        <script>
+            
+        </script>
+        <title>八字排盘页(demo)</title>
+    </head>
+    <body id="body" style="text-align: center;">
+        <form id="form">
+        </form>
+        <button id="mainButton" class="button" onclick="mainFunc()">点击开始八字排盘</button>
+        <div id="resultBox" style="font-size: large; text-align: center;">
+            结果将在此显示。
+        </div>
+        <div style="font-size: small; text-align: center; color: gray;">
+            <br><br><br>
+            温馨提示：本站所得结果，仅供娱乐参考或民俗研究之用，请勿迷信。因迷信测试结果而造成的任何损失，本站概不负责。
+        </div>
+        <script src="lunar.js"></script>
+        <script>
+            function getQueryVariable(variable) {
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i=0;i<vars.length;i++) {
+                    var pair = vars[i].split("=");
+                    if(pair[0] == variable){return pair[1];}
+                }
+                return(false);
+            }
+            var currentyear = new Date();
+            currentyear = currentyear.getFullYear();
+            var formstring = "<p>请输入生辰及性别：</p>";
+            formstring += "<label for=\"year\">年：</lable><select id=\"year\" name=\"year\">";
+            for (let i = 1980; i <= currentyear; ++i) {
+                formstring += "<option value=\"" + i + "\"" + (i == getQueryVariable("y") ? "selected" : "") + ">" + i + "</option>";
+            }
+            formstring += "</select>";
+            formstring += "<label for=\"month\">月：</lable><select id=\"month\" name=\"month\">";
+            for (let i = 1; i <= 12; ++i) {
+                formstring += "<option value=\"" + i + "\"" + (i == getQueryVariable("m") ? "selected" : "") + ">" + i + "</option>";
+            }
+            formstring += "</select>";
+            formstring += "<label for=\"day\">日：</lable><select id=\"day\" name=\"day\">";
+            for (let i = 1; i <= 31; ++i) {
+                formstring += "<option value=\"" + i + "\"" + (i == getQueryVariable("d") ? "selected" : "") + ">" + i + "</option>";
+            }
+            formstring += "</select>";
+            formstring += "<br><label for=\"hour\">时（向下取整）：</lable><select id=\"hour\" name=\"hour\">";
+            for (let i = 0; i < 24; ++i) {
+                formstring += "<option value=\"" + i + "\">" + i + "</option>";
+            }
+            formstring += "</select> <br> <label>性别:</label><input type=\"radio\" id=\"male\" name=\"gender\" value=\"male\" checked><label for=\"male\">男</label><input type=\"radio\" id=\"female\" name=\"gender\" value=\"female\"><label for=\"female\">女</label>";
+            document.getElementById("form").innerHTML = formstring;
+
+            function keGan(lhs, rhs) {
+                var gans = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]; //木 火 土 金 水
+                //木 土 水 火 金
+                //0 2 4 1 3
+                var indexl = Math.floor(gans.indexOf(lhs) / 2);
+                var indexr = Math.floor(gans.indexOf(rhs) / 2);
+                if ((indexl - indexr + 5) % 5 == 3) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            var zhis = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+            function chongZhi(lhs, rhs) {
+                var indexl = zhis.indexOf(lhs);
+                var indexr = zhis.indexOf(rhs);
+                if (Math.abs(indexl - indexr) == 6) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            function heZhi(lhs, rhs) {
+                var indexl = zhis.indexOf(lhs);
+                var indexr = zhis.indexOf(rhs);
+                if (indexl + indexr == 13 || indexl + indexr == 1) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            function xingZhi(lhs, rhs) {
+                var indexl = zhis.indexOf(lhs);
+                var indexr = zhis.indexOf(rhs);
+                if (indexl == 0 && indexr == 3) return true;
+                else if (indexl == 1 && indexr == 10) return true;
+                else if (indexl == 2 && indexr == 5) return true;
+                else if (indexl == 3 && indexr == 0) return true;
+                else if (indexl == 4 && indexr == 4) return true;
+                else if (indexl == 5 && indexr == 8) return true;
+                else if (indexl == 6 && indexr == 6) return true;
+                else if (indexl == 7 && indexr == 1) return true;
+                else if (indexl == 8 && indexr == 2) return true;
+                else if (indexl == 9 && indexr == 9) return true;
+                else if (indexl == 10 && indexr == 7) return true;
+                else if (indexl == 11 && indexr == 11) return true;
+                else return false;
+            }
+            function haiZhi(lhs, rhs) {
+                var indexl = zhis.indexOf(lhs);
+                var indexr = zhis.indexOf(rhs);
+                if (indexl + indexr == 7 || indexl + indexr == 19) return true;
+                else return false;
+            }
+            function resultDescription(word) {
+                switch (word) {
+                case "冲":
+                    return "<br>地支逢冲，草木萌动！今年婚姻宫逢冲，得见美人，春心荡漾！～～躁动之余，可要小心被荷尔蒙冲昏了头脑哟～在美好的日常中谨慎地维系这段感情吧！";
+                    break;
+                case "合":
+                    return "<br>地支相合，情投意合！今年婚姻宫逢合，机缘上门，真命天子/女，来在今年！灿烂之情恰如夏日繁花，贞坚之心可比牛郎织女！";
+                    break;
+                case "刑":
+                case "害":
+                    return "<br>地支逢刑害，当心受灾！今年婚姻宫逢害，一情请作两方看！一看对方适合否，莫将骷髅作娇娥；一看自身幸福否，莫教红颜伤心肠～～在清醒之后谨慎地对待这段感情吧！";
+                    break;
+                default:
+                    return "";
+                }
+            }
+            
+            function mainFunc() {
+                document.getElementById("resultBox").style = "text-align: left; margin: 15px; border: 5px; padding: 10px; width: auto; border-color: pink; border-style: groove;";
+                var now = new Date();
+                document.getElementById("resultBox").innerHTML = "";
+                var my_y = document.forms["form"]["year"].value;
+                var my_m = document.forms["form"]["month"].value;
+                var my_d = document.forms["form"]["day"].value;
+                var my_h = document.forms["form"]["hour"].value;
+                var sex = (document.forms["form"]["gender"] == "female" ? 0 : 1);
+                var solar = Solar.fromYmdHms(my_y,my_m,my_d,my_h,0,0);
+                var lunar = Lunar.fromDate(new Date(my_y, my_m - 1, my_d, my_h));
+                var d = lunar.getEightChar();
+                document.getElementById("resultBox").innerHTML += "你的生辰八字：" + (d) + "<br>";
+                // document.getElementById("resultBox").innerHTML += "<br>" + (d.getYearWuXing() + ', ' + d.getMonthWuXing() + ', ' + d.getDayWuXing() + ', ' + d.getTimeWuXing());
+                // document.getElementById("resultBox").innerHTML += "<br>" + (d.getYearNaYin() + ', ' + d.getMonthNaYin() + ', ' + d.getDayNaYin() + ', ' + d.getTimeNaYin());
+                // document.getElementById("resultBox").innerHTML += "<br>" + (d.getYearShiShenGan() + ', ' + d.getMonthShiShenGan() + ', ' + d.getDayShiShenGan() + ', ' + d.getTimeShiShenGan());
+
+                // // 年支十神
+                // document.getElementById("resultBox").innerHTML += "<br>" + ('年支十神 = ' + d.getYearShiShenZhi());
+
+                // // 月支十神
+                // document.getElementById("resultBox").innerHTML += "<br>" + ('月支十神 = ' + d.getMonthShiShenZhi());
+
+                // // 日支十神
+                // document.getElementById("resultBox").innerHTML += "<br>" + ('日支十神 = ' + d.getDayShiShenZhi());
+
+                // // 时支十神
+                // document.getElementById("resultBox").innerHTML += "<br>" + ('时支十神 = ' + d.getTimeShiShenZhi());
+
+                // 获取运
+                var yun = d.getYun(sex);
+
+                // 起运
+                //document.getElementById("resultBox").innerHTML += "<br>" + ('出生' + yun.getStartYear() + '年' + yun.getStartMonth() + '个月' + yun.getStartDay() + '天后起运');
+
+                // 获取大运表
+                var daYunArr = yun.getDaYun();
+                var dayuncurr = 0;
+                for (var i=0, j=daYunArr.length; i<j; i++) {
+                    var daYun = daYunArr[i];
+                    if (now.getFullYear() >= daYun.getStartYear()) {
+                        dayuncurr = i;
+                    }
+                    //document.getElementById("resultBox").innerHTML += "<br>" + ('大运[' + i + '] = ' + daYun.getStartYear() + '年 ' + daYun.getStartAge() + '岁 ' + daYun.getGanZhi());
+                }
+
+                for (let k = 0; k < 3; ++k) {
+                    var LiuNianArr = daYunArr[dayuncurr + k].getLiuNian();
+                    for (var i=0, j=LiuNianArr.length; i<j; i++) {
+                        var liuNian = LiuNianArr[i];
+                        var word = 0;
+                        if (((keGan(liuNian.getGanZhi()[0], d.getDayGan()) && sex == 0) || (keGan(d.getDayGan(), liuNian.getGanZhi()[0]) && sex == 1)) && liuNian.getYear() >= now.getFullYear()){
+                            if (chongZhi(liuNian.getGanZhi()[1], d.getDayZhi())) {
+                                word = "冲";
+                                document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
+                            }
+                            else if (heZhi(liuNian.getGanZhi()[1], d.getDayZhi())) {
+                                word = "合";
+                                document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
+                            }
+                            else if (xingZhi(liuNian.getGanZhi()[1], d.getDayZhi())) {
+                                word = "刑";
+                                document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
+                            }
+                            else if (haiZhi(liuNian.getGanZhi()[1], d.getDayZhi())) {
+                                word = "害";
+                                document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
+                            }
+                            else //if ((keGan(liuNian.getGanZhi()[0], d.getDayGan()) && sex == 0) || (keGan(d.getDayGan(), liuNian.getGanZhi()[0]) && sex == 1))
+                                document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
+                            document.getElementById("resultBox").innerHTML +="<br>恭喜恭喜亲🎉：今年桃花星当临，可是十年难遇的机缘之年哟～今年桃花运临门，春风十里送佳人。桃花运来，爱情花开；姻缘天定，幸福自来。在这美好的时光里，收获满满的爱与幸福吧！" + resultDescription(word) + "<br>";
+                        }
+                    }
+                }
+                
+                
+            }
+		</script>
+    </body>
+</html>

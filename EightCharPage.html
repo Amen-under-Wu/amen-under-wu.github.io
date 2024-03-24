@@ -163,34 +163,13 @@
                 var my_m = document.forms["form"]["month"].value;
                 var my_d = document.forms["form"]["day"].value;
                 var my_h = document.forms["form"]["hour"].value;
-                var sex = (document.forms["form"]["gender"] == "female" ? 0 : 1);
+                var sex = (document.forms["form"]["gender"].value == "female" ? 0 : 1);
                 var solar = Solar.fromYmdHms(my_y,my_m,my_d,my_h,0,0);
                 var lunar = Lunar.fromDate(new Date(my_y, my_m - 1, my_d, my_h));
                 var d = lunar.getEightChar();
                 document.getElementById("resultBox").innerHTML += "你的生辰八字：" + (d) + "<br>";
-                // document.getElementById("resultBox").innerHTML += "<br>" + (d.getYearWuXing() + ', ' + d.getMonthWuXing() + ', ' + d.getDayWuXing() + ', ' + d.getTimeWuXing());
-                // document.getElementById("resultBox").innerHTML += "<br>" + (d.getYearNaYin() + ', ' + d.getMonthNaYin() + ', ' + d.getDayNaYin() + ', ' + d.getTimeNaYin());
-                // document.getElementById("resultBox").innerHTML += "<br>" + (d.getYearShiShenGan() + ', ' + d.getMonthShiShenGan() + ', ' + d.getDayShiShenGan() + ', ' + d.getTimeShiShenGan());
-
-                // // 年支十神
-                // document.getElementById("resultBox").innerHTML += "<br>" + ('年支十神 = ' + d.getYearShiShenZhi());
-
-                // // 月支十神
-                // document.getElementById("resultBox").innerHTML += "<br>" + ('月支十神 = ' + d.getMonthShiShenZhi());
-
-                // // 日支十神
-                // document.getElementById("resultBox").innerHTML += "<br>" + ('日支十神 = ' + d.getDayShiShenZhi());
-
-                // // 时支十神
-                // document.getElementById("resultBox").innerHTML += "<br>" + ('时支十神 = ' + d.getTimeShiShenZhi());
-
-                // 获取运
                 var yun = d.getYun(sex);
-
-                // 起运
-                //document.getElementById("resultBox").innerHTML += "<br>" + ('出生' + yun.getStartYear() + '年' + yun.getStartMonth() + '个月' + yun.getStartDay() + '天后起运');
-
-                // 获取大运表
+                
                 var daYunArr = yun.getDaYun();
                 var dayuncurr = 0;
                 for (var i=0, j=daYunArr.length; i<j; i++) {
@@ -198,7 +177,6 @@
                     if (now.getFullYear() >= daYun.getStartYear()) {
                         dayuncurr = i;
                     }
-                    //document.getElementById("resultBox").innerHTML += "<br>" + ('大运[' + i + '] = ' + daYun.getStartYear() + '年 ' + daYun.getStartAge() + '岁 ' + daYun.getGanZhi());
                 }
 
                 for (let k = 0; k < 3; ++k) {

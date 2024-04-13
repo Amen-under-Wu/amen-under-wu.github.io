@@ -68,6 +68,11 @@
                 formstring += "<option value=\"" + i + "\">" + i + "</option>";
             }
             formstring += "</select>";
+            formstring += "<br><label for=\"hour\">时（向下取整）：</lable><select id=\"hour\" name=\"hour\">";
+            for (let i = 0; i < 24; ++i) {
+                formstring += "<option value=\"" + i + "\">" + i + "</option>";
+            }
+            formstring += "</select> <br> <label>性别:</label><input type=\"radio\" id=\"male\" name=\"gender\" value=\"male\" checked><label for=\"male\">男</label><input type=\"radio\" id=\"female\" name=\"gender\" value=\"female\"><label for=\"female\">女</label>";
             document.getElementById("form").innerHTML = formstring;
 
             magic_f_list = [
@@ -93,6 +98,8 @@
                 var y = Number(document.forms["form"]["year"].value);
                 var m = Number(document.forms["form"]["month"].value);
                 var d = Number(document.forms["form"]["day"].value);
+                var h = Number(document.forms["form"]["hour"].value);
+                var gender = document.forms["form"]["gender"].value;
                 var lunar = Lunar.fromDate(new Date(y, m - 1, d));
                 var ly = lunar.getYear();
                 var lm = Math.abs(lunar.getMonth());
@@ -100,7 +107,7 @@
                 document.getElementById("resultBox").innerHTML = "<p style=\"text-align: left; margin: 15px; border: 5px; padding: 10px; width: auto; border-color: pink; border-style: groove;\">" 
                     + "你的阴历生日：" + lunar.getYearInChinese() + "年" + lunar.getMonthInChinese() + "月" + lunar.getDayInChinese() + "日" + "<br>"
                     + "<br>你的鬼谷星：" + allResults[magic_f(ly, lm, ld)] + "</p>";
-                document.getElementById("resultBox").innerHTML += "<a class=\"button\" style = \"background-color: green;\"href=\"" + nextPageBaseUrl + "?y=" + y + "&m=" + m + "&d=" + d + "\">想查看更详细的感情运势？点击按钮跳转</a>";
+                document.getElementById("resultBox").innerHTML += "<a class=\"button\" style = \"background-color: green;\"href=\"" + nextPageBaseUrl + "?y=" + y + "&m=" + m + "&d=" + d + "&h=" + h + "&g=" + gender + "\">想查看更详细的感情运势？点击按钮跳转</a>";
             }
 		</script>
     </body>

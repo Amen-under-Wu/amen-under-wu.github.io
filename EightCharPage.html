@@ -76,9 +76,9 @@
             formstring += "</select>";
             formstring += "<br><label for=\"hour\">时（向下取整）：</lable><select id=\"hour\" name=\"hour\">";
             for (let i = 0; i < 24; ++i) {
-                formstring += "<option value=\"" + i + "\">" + i + "</option>";
+                formstring += "<option value=\"" + i + "\"" + (i == getQueryVariable("h") ? "selected" : "") + ">" + i + "</option>";
             }
-            formstring += "</select> <br> <label>性别:</label><input type=\"radio\" id=\"male\" name=\"gender\" value=\"male\" checked><label for=\"male\">男</label><input type=\"radio\" id=\"female\" name=\"gender\" value=\"female\"><label for=\"female\">女</label>";
+            formstring += "</select> <br> <label>性别:</label><input type=\"radio\" id=\"male\" name=\"gender\" value=\"male\"" + (getQueryVariable("g") != "female" ? " checked" : "") + "><label for=\"male\">男</label><input type=\"radio\" id=\"female\" name=\"gender\" value=\"female\"" + (getQueryVariable("g") == "female" ? " checked" : "") + "><label for=\"female\">女</label>";
             document.getElementById("form").innerHTML = formstring;
 
             function keGan(lhs, rhs) {
@@ -94,6 +94,33 @@
                     return false;
                 }
             }
+            function direction_expl(gan) {
+                var gans = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]; //木 火 土 金 水
+                var directions = ["东方", "南方", "中原", "西方", "北方"];
+                var explanations = [
+                    "愿东方的晨曦为你带来希望的光芒，如同东海的波涛般汹涌澎湃的热情，愿你的每一天都充满朝气与活力。愿你们的爱情如东方明珠般璀璨夺目，经得起时间的考验，愈发坚韧与珍贵。",
+                    "愿南方的热情如夏日的阳光，温暖你的心房，如同珠江的流水，绵绵不绝。愿你们的爱情如南方的绿意盎然，生机勃勃，即使经历风雨，也依旧繁花似锦，春意盎然。",
+                    "愿中原的厚重历史为你的爱情增添底蕴与深度，如同黄河的流淌，源远流长。愿你们的关系如中原大地般肥沃，培育出最美丽的花朵，愿你们的爱情故事，如同中原的古都，历经沧桑，却愈发辉煌。", 
+                    "愿西方的丝绸之路带给你无限的探索与发现，如同西域的辽阔天地，给予你们的爱情以宽广的胸怀和深远的视野。愿你们的关系如古丝路般，连接彼此的心灵，共同经历生活的丰富多彩。",
+                    "愿北方的雪国风光为你带来纯洁与坚韧，如同长城的巍峨，经得起岁月的洗礼。愿你们的爱情如北方的冬日，虽然寒冷，却更加显得温暖而珍贵，经得起风霜，愈发坚定。"
+                ];
+                var appearances = [
+                    "挺拔秀丽，脸色青白，脸部线条分明。",
+                    "苗条秀丽，眼睛有神，皮肤白皙胜雪。",
+                    "白里透红，明眸善睐，性格比较热情。",
+                    "皮肤红润，脸型小巧，天生灵气十足。",
+                    "脸方厚实，大眼有神，脸色略发灰白。",
+                    "额头饱满，双眼温和，脸色略显暗淡。",
+                    "皮肤白皙，眼睛细长，脸部棱角分明。",
+                    "多鹅蛋脸，杏眼白肤，容颜水灵秀气。",
+                    "多瓜子脸，皮肤亮白，性格热情开朗。",
+                    "方脸肉多，眼神清澈，皮肤光泽亮丽。",
+                ];
+                var index = Math.floor(gans.indexOf(gan) / 2);
+                let result = [directions[index], explanations[index], appearances[gans.indexOf(gan)]];
+                return result;
+            }
+
             var zhis = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
             function chongZhi(lhs, rhs) {
                 var indexl = zhis.indexOf(lhs);
@@ -163,13 +190,35 @@
                 var my_m = document.forms["form"]["month"].value;
                 var my_d = document.forms["form"]["day"].value;
                 var my_h = document.forms["form"]["hour"].value;
-                var sex = (document.forms["form"]["gender"].value == "female" ? 0 : 1);
+                let sex = (document.forms["form"]["gender"].value == 'female' ? 0 : 1);
+                //alert(sex);
                 var solar = Solar.fromYmdHms(my_y,my_m,my_d,my_h,0,0);
                 var lunar = Lunar.fromDate(new Date(my_y, my_m - 1, my_d, my_h));
                 var d = lunar.getEightChar();
                 document.getElementById("resultBox").innerHTML += "你的生辰八字：" + (d) + "<br>";
+                // document.getElementById("resultBox").innerHTML += "<br>" + (d.getYearWuXing() + ', ' + d.getMonthWuXing() + ', ' + d.getDayWuXing() + ', ' + d.getTimeWuXing());
+                // document.getElementById("resultBox").innerHTML += "<br>" + (d.getYearNaYin() + ', ' + d.getMonthNaYin() + ', ' + d.getDayNaYin() + ', ' + d.getTimeNaYin());
+                // document.getElementById("resultBox").innerHTML += "<br>" + (d.getYearShiShenGan() + ', ' + d.getMonthShiShenGan() + ', ' + d.getDayShiShenGan() + ', ' + d.getTimeShiShenGan());
+
+                // // 年支十神
+                // document.getElementById("resultBox").innerHTML += "<br>" + ('年支十神 = ' + d.getYearShiShenZhi());
+
+                // // 月支十神
+                // document.getElementById("resultBox").innerHTML += "<br>" + ('月支十神 = ' + d.getMonthShiShenZhi());
+
+                // // 日支十神
+                // document.getElementById("resultBox").innerHTML += "<br>" + ('日支十神 = ' + d.getDayShiShenZhi());
+
+                // // 时支十神
+                // document.getElementById("resultBox").innerHTML += "<br>" + ('时支十神 = ' + d.getTimeShiShenZhi());
+
+                // 获取运
                 var yun = d.getYun(sex);
-                
+
+                // 起运
+                //document.getElementById("resultBox").innerHTML += "<br>" + ('出生' + yun.getStartYear() + '年' + yun.getStartMonth() + '个月' + yun.getStartDay() + '天后起运');
+
+                // 获取大运表
                 var daYunArr = yun.getDaYun();
                 var dayuncurr = 0;
                 for (var i=0, j=daYunArr.length; i<j; i++) {
@@ -177,37 +226,45 @@
                     if (now.getFullYear() >= daYun.getStartYear()) {
                         dayuncurr = i;
                     }
+                    //document.getElementById("resultBox").innerHTML += "<br>" + ('大运[' + i + '] = ' + daYun.getStartYear() + '年 ' + daYun.getStartAge() + '岁 ' + daYun.getGanZhi());
                 }
-
+                var the_gan;
                 for (let k = 0; k < 3; ++k) {
                     var LiuNianArr = daYunArr[dayuncurr + k].getLiuNian();
                     for (var i=0, j=LiuNianArr.length; i<j; i++) {
                         var liuNian = LiuNianArr[i];
                         var word = 0;
                         if (((keGan(liuNian.getGanZhi()[0], d.getDayGan()) && sex == 0) || (keGan(d.getDayGan(), liuNian.getGanZhi()[0]) && sex == 1)) && liuNian.getYear() >= now.getFullYear()){
+                            the_gan = liuNian.getGanZhi()[0];
+                            var rating = 50;
                             if (chongZhi(liuNian.getGanZhi()[1], d.getDayZhi())) {
                                 word = "冲";
+                                rating = 80;
                                 document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
                             }
                             else if (heZhi(liuNian.getGanZhi()[1], d.getDayZhi())) {
                                 word = "合";
+                                rating = 100;
                                 document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
                             }
                             else if (xingZhi(liuNian.getGanZhi()[1], d.getDayZhi())) {
                                 word = "刑";
+                                rating = 60;
                                 document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
                             }
                             else if (haiZhi(liuNian.getGanZhi()[1], d.getDayZhi())) {
                                 word = "害";
+                                rating = 60;
                                 document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
                             }
                             else //if ((keGan(liuNian.getGanZhi()[0], d.getDayGan()) && sex == 0) || (keGan(d.getDayGan(), liuNian.getGanZhi()[0]) && sex == 1))
                                 document.getElementById("resultBox").innerHTML += "<br>" + ('重要流年：' + liuNian.getYear() + '年 ' + liuNian.getAge() + '岁 ' + liuNian.getGanZhi());
-                            document.getElementById("resultBox").innerHTML +="<br>恭喜恭喜亲🎉：今年桃花星当临，可是十年难遇的机缘之年哟～今年桃花运临门，春风十里送佳人。桃花运来，爱情花开；姻缘天定，幸福自来。在这美好的时光里，收获满满的爱与幸福吧！" + resultDescription(word) + "<br>";
+                            document.getElementById("resultBox").innerHTML += "<br>恋爱指数：" + rating + "<br>恭喜恭喜亲🎉：今年桃花星当临，可是十年难遇的机缘之年哟～今年桃花运临门，春风十里送佳人。桃花运来，爱情花开；姻缘天定，幸福自来。在这美好的时光里，收获满满的爱与幸福吧！" + resultDescription(word) + "<br>";
+                            document.getElementById("resultBox").innerHTML += "TA的外貌：" + direction_expl(the_gan)[2] + "<br>";
                         }
                     }
                 }
-                
+                document.getElementById("resultBox").innerHTML += "<br><br>你的宿世情缘来自：" + direction_expl(the_gan)[0] + "<br>" + direction_expl(the_gan)[1];
                 
             }
 		</script>

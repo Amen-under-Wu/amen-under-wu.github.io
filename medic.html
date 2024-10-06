@@ -742,23 +742,25 @@
                         const opt_laoyang = option.replaceAll("$id$", "老阳").replaceAll("$val$", "3");
                         const yao_select = "<label>$yao_name$：</label>" + opt_shaoyang + opt_shaoyin + opt_laoyang + opt_laoyin + "<br>";
                         var zhi_select_list = "<label for=\"$name$\">$name_cn$：</label><select id=\"$name$\" name=\"$name$\">";
+                        var gan_select_list = zhi_select_list;
                         const zhi_option = "<option value=\"$zhi$\">$zhi$</option>";
                         for (let i = 0; i < 12; ++i) {
                             zhi_select_list = zhi_select_list + zhi_option.replaceAll("$zhi$", zhi_name_map[i]);
                         }
+                        for (let i = 0; i < 10; ++i) {
+                            gan_select_list += zhi_option.replaceAll("$zhi$", gan_name_map[i]);
+                        }
+                        gan_select_list += "</select>";
                         zhi_select_list = zhi_select_list + "</select>";
                         const num_char = ["一", "二", "三", "四", "五", "六"];
                         var yaoform_inner = "";
                         for (let i = 0; i < 6; ++i) {
                             yaoform_inner = yao_select.replaceAll("$yao_index$", i + "").replaceAll("$yao_name$", "第" + num_char[i] + "爻") + yaoform_inner;
                         }
-                        yaoform_inner += zhi_select_list.replaceAll("$name$", "month_zhi").replaceAll("$name_cn$", "月支");
-                        yaoform_inner += zhi_select_list.replaceAll("$name$", "day_zhi").replaceAll("$name_cn$", "日支") + "<br>";
-                        yaoform_inner += "<label for=\"xunkong\">日柱旬空：</label><select id=\"xunkong\" name=\"xunkong\">";
-                        for (let i = 0; i < 6; ++i) {
-                            yaoform_inner += zhi_option.replaceAll("$zhi$", zhi_name_map[i * 2] + zhi_name_map[i * 2 + 1]);
-                        }
-                        yaoform_inner += "</select>";
+                        yaoform_inner += zhi_select_list.replaceAll("$name$", "month_zhi").replaceAll("$name_cn$", "月支").replace(monthzhi_chr + "\">", monthzhi_chr + "\" selected>");
+                        yaoform_inner += gan_select_list.replaceAll("$name$", "day_gan").replaceAll("$name_cn$", "日干").replace(ec.getDayGan() + "\">", ec.getDayGan() + "\" selected>");
+                        yaoform_inner += zhi_select_list.replaceAll("$name$", "day_zhi").replaceAll("$name_cn$", "日支").replace(dayzhi_chr + "\">", dayzhi_chr + "\" selected>");
+                        //yaoform_inner += "</select>";
                         const yaoform = "<form id=\"yaoform\">" + yaoform_inner + "</form>";
                         document.getElementById("body").innerHTML = yaoform + document.getElementById("body").innerHTML;
                         start_select = true;
@@ -771,7 +773,15 @@
                         }
                         dayzhi_chr = document.forms["yaoform"]["day_zhi"].value;
                         monthzhi_chr = document.forms["yaoform"]["month_zhi"].value;
-                        xunkong_str = document.forms["yaoform"]["xunkong"].value;
+                        var daygan_chr = document.forms["yaoform"]["day_gan"].value;
+                        var dg = gan_name_map.indexOf(daygan_chr);
+                        var dz = zhi_name_map.indexOf(dayzhi_chr);
+                        dz = (dz - dg + 10) % 12;
+                        if (dz % 2 == 1) {
+                            alert("日柱不存在！");
+                            return;
+                        }
+                        xunkong_str = zhi_name_map[dz] + zhi_name_map[dz + 1];
                         document.getElementById("body").removeChild(document.getElementById("yaoform"));
                         displayResult(result);
                     }

@@ -539,7 +539,7 @@
                 var monthzhi = zhi_name_map.indexOf(monthzhi_chr);
                 var daywx = zhi_wuxing_map[dayzhi];
                 var monthwx = zhi_wuxing_map[monthzhi];
-                var o = "<br>";
+                var o = "";
                 if (liuchong_index.indexOf(getGuaBen(result)) != -1 || liuchong_index.indexOf(getGuaBian(result)) != -1) {
                     if (liuchong_index.indexOf(getGuaBen(result)) != -1) {
                         o += "逢六冲，";
@@ -589,10 +589,34 @@
                     }
                     else {
                         if (yongshen == "世爻") {
+                            const yongshen_wx = zhi_wuxing_map[zhi_table[shi_pos]];
+                            const jishen_wx = wuxing_ke_map.indexOf(yongshen_wx);
+                            const yuanshen_wx = wuxing_sheng_map.indexOf(yongshen_wx);
+                            const choushen_wx = wuxing_ke_map[yongshen_wx];
                             if ((result[shi_pos] == 0 || result[shi_pos] == 3) && liuqin_table_bian[shi_pos] == "官鬼") {
                                 o += "世鬼互化，凶";
                             }
+                            else if (liuqin_table[shi_pos] == "官鬼") {
+                                o += "官鬼持世，病难根除";
+                                if (dayzhi == wuxing_swmj_map[zhi_wuxing_map[zhi_table[shi_pos]]][0]) {
+                                    o += "；又临长生，必得久远疾病";
+                                }
+                                else if (dayzhi == wuxing_swmj_map[zhi_wuxing_map[zhi_table[shi_pos]]][1]) {
+                                    o += "；又临帝旺，必得久远疾病";
+                                }
+                            }
                             else {
+                                let tu_gui_du_fa = true;
+                                tu_gui_du_fa &&= ((x_amount + o_amount) == 1);
+                                for (let dong_pos = 0; dong_pos < 5; ++dong_pos) {
+                                    if (result[dong_pos] == 0 || result[dong_pos] == 3) {
+                                        tu_gui_du_fa &&= (liuqin_table[dong_pos] == "官鬼" && zhi_wuxing_map[zhi_table[dong_pos]] == wx_tu);
+                                    }
+                                }
+                                if (tu_gui_du_fa) {
+                                    o += "土鬼独发，九死一生，凶";
+                                    return o;
+                                }
                                 if (zhi_name_map[zhi_table[shi_pos]] == xunkong_str[0] || zhi_name_map[zhi_table[shi_pos]] == xunkong_str[1]) {
                                     for (let i = 0; i < 6; i++) {
                                         if ((result[i] == 0 || result[i] == 3) && (zhi_table[i] == zhi_liuhe_map[zhi_table[shi_pos]])) {
@@ -634,7 +658,7 @@
                                                 return o;
                                             }
                                         }
-                                        o += "吉";
+                                        o += "世爻旬空，无日月动爻冲克，吉";
                                     }
                                 }
                                 else if ((result[shi_pos] == 0 || result[shi_pos] == 3) && zhi_wuxing_map[zhi_table[shi_pos]] != monthwx && zhi_wuxing_map[zhi_table[shi_pos]] != wuxing_sheng_map[monthwx] && zhi_table[shi_pos] == zhi_liuchong_map[dayzhi]) {
@@ -696,25 +720,37 @@
                                                 o += "无回头克，吉"
                                             }
                                         }
-                                        else if (liuqin_dong(result, "官鬼")) {
-                                            if (!liuqin_dong(result, "父母")) {
-                                                o += "官鬼爻发动，凶";
+                                        else {
+                                            let yuan_dong = false, ji_dong = false, chou_dong = false;
+                                            for (let i = 0; i < 6; ++i) {
+                                                if (result[i] == 0 || result[i] == 3) {
+                                                    let wx_dong = zhi_wuxing_map[zhi_table[i]];
+                                                    yuan_dong ||= (wx_dong == yuanshen_wx);
+                                                    ji_dong ||= (wx_dong == jishen_wx);
+                                                    chou_dong ||= (wx_dong == choushen_wx);
+                                                }
                                             }
-                                            else if (liuqin_dong(result, "妻财")) {
-                                                o += "官鬼、父母、妻财爻发动，凶";
+                                            if (ji_dong) {
+                                                if (!yuan_dong) {
+                                                    o += "忌神发动，凶";
+                                                }
+                                                else if (chou_dong) {
+                                                    o += "忌神、元神、仇神同动，凶";
+                                                }
+                                                else {
+                                                    o += "忌神、元神同动，尚有救，小吉";
+                                                }
+                                            }
+                                            else if ((getGuaBenBinary(result) >> 3) == (gua_fanyin_binary_map[getGuaBianBinary(result) >> 3]) || (getGuaBenBinary(result) & 7) == (gua_fanyin_binary_map[getGuaBianBinary(result) & 7])) {
+                                                o += ((getGuaBenBinary(result) & 7) == (gua_fanyin_binary_map[getGuaBianBinary(result) & 7]) ? "内" : "");
+                                                o += ((getGuaBenBinary(result) >> 3) == (gua_fanyin_binary_map[getGuaBianBinary(result) >> 3]) ? "外" : "");
+                                                o += "卦反吟，病情反复，凶";
                                             }
                                             else {
-                                                o += "官鬼、父母爻发动，吉";
+                                                o += "子孙、忌神未发动，卦无反吟，吉";
                                             }
                                         }
-                                        else if ((getGuaBenBinary(result) >> 3) == (gua_fanyin_binary_map[getGuaBianBinary(result) >> 3]) || (getGuaBenBinary(result) & 7) == (gua_fanyin_binary_map[getGuaBianBinary(result) & 7])) {
-                                            o += ((getGuaBenBinary(result) & 7) == (gua_fanyin_binary_map[getGuaBianBinary(result) & 7]) ? "内" : "");
-                                            o += ((getGuaBenBinary(result) >> 3) == (gua_fanyin_binary_map[getGuaBianBinary(result) >> 3]) ? "外" : "");
-                                            o += "卦反吟，病情反复，凶";
-                                        }
-                                        else {
-                                            o += "子孙、官鬼爻未发动，卦无反吟，吉";
-                                        }
+                                        
                                     }
                                 }
                             }
@@ -757,7 +793,7 @@
                         for (let i = 0; i < 6; ++i) {
                             yaoform_inner = yao_select.replaceAll("$yao_index$", i + "").replaceAll("$yao_name$", "第" + num_char[i] + "爻") + yaoform_inner;
                         }
-                        yaoform_inner += zhi_select_list.replaceAll("$name$", "month_zhi").replaceAll("$name_cn$", "月支").replace(monthzhi_chr + "\">", monthzhi_chr + "\" selected>");
+                        yaoform_inner += "（日月干支已默认设置为当前时间）<br>" + zhi_select_list.replaceAll("$name$", "month_zhi").replaceAll("$name_cn$", "月支").replace(monthzhi_chr + "\">", monthzhi_chr + "\" selected>");
                         yaoform_inner += gan_select_list.replaceAll("$name$", "day_gan").replaceAll("$name_cn$", "日干").replace(ec.getDayGan() + "\">", ec.getDayGan() + "\" selected>");
                         yaoform_inner += zhi_select_list.replaceAll("$name$", "day_zhi").replaceAll("$name_cn$", "日支").replace(dayzhi_chr + "\">", dayzhi_chr + "\" selected>");
                         //yaoform_inner += "</select>";
@@ -798,7 +834,7 @@
                 analyzeResult(result);
                 
                 var o = "";
-                o += "<br>" + monthzhi_chr + "月" + dayzhi_chr + "日，" + xunkong_str + "空<br><br>"
+                o += "<br>" + monthzhi_chr + "月" + dayzhi_chr + "日，" + xunkong_str + "空<br><br><h2>易辞断法：</h2>"
 
                 switch(x_amount + o_amount) {
                     case 0:
@@ -854,7 +890,7 @@
                         break;
                 }
                 
-                o += "<br>" + medicalAnalysis(result);
+                o += "<br><h2>六爻断法：</h2>" + medicalAnalysis(result);
 
                 document.getElementById("outputBox").innerHTML = o;
 

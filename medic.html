@@ -171,7 +171,13 @@
             const zhi_wuxing_map = [wx_shui, wx_tu, wx_mu, wx_mu, wx_tu, wx_huo, wx_huo, wx_tu, wx_jin, wx_jin, wx_tu, wx_shui];
             const gz_map = [[[g_jia, z_zi], [g_ren, z_wu]], [[g_xin, z_chou], [g_xin, z_wei]], [[g_ji, z_mao], [g_ji, z_you]], [[g_bing, z_chen], [g_bing, z_xu]], [[g_ding, z_si], [g_ding, z_hai]], [[g_wu, z_yin], [g_wu, z_shen]], [[g_geng, z_zi], [g_geng, z_wu]], [[g_yi, z_wei], [g_gui, z_chou]]];
             const month_zhi_map = [z_yin, z_mao, z_chen, z_si, z_wu, z_wei, z_shen, z_you, z_xu, z_hai, z_zi, z_chou];
-            
+            function is_jin(lhs, rhs) {
+                let res = zhi_wuxing_map[lhs] == zhi_wuxing_map[rhs];
+                if (res) {
+                    res = (zhi_wuxing_map[lhs] == wx_tu ? (rhs + 12 - lhs) % 12 == 3 : (rhs + 12 - lhs) % 12 == 1);
+                }
+                return res;
+            }
             var wuxing_swmj_map = [];
             wuxing_swmj_map[wx_jin] = [z_si, z_you, z_chou, z_yin];
             wuxing_swmj_map[wx_shui] = wuxing_swmj_map[wx_tu] = [z_shen, z_zi, z_chen, z_si];
@@ -305,6 +311,8 @@
             var liuqin_table_bian;
             var zhi_table = [];
             var zhi_table_bian = [];
+            var zhi_table_fu = [];
+            var fu_bin = 0;
             var ben_wx;
             function displayResultWithGanZhi(result) {
                 var bengua_bin = getGuaBenBinary(result);
@@ -323,11 +331,25 @@
                         break;
                     }
                 }
+                if (gong == 0) {
+                    fu_bin = (ben_gong_bin ^ 0b111) * 9;
+                }
+                else if (gong <= 3) {
+                    fu_bin = ((ben_gong_bin ^ 0b111) << 3) + ben_gong_bin;
+                }
+                else if (gong <= 6) {
+                    fu_bin = ben_gong_bin * 9;
+                }
+                else {
+                    fu_bin = (ben_gong_bin << 3) + (ben_gong_bin ^ 0b111);
+                }
                 shi_pos = shiyao_pos_table[gong];
                 var ben_zhi_table = [];
                 var bian_zhi_table = [];
+                var fu_zhi_table = [];
                 var ben_wx_enum_table = [];
                 var bian_wx_enum_table = [];
+                var fu_wx_enum_table = [];
                 var zhi;
                 zhi = gz_map[bengua_bin & 7][0][1];
                 for (let i = 0; i < 3; ++i) {
@@ -358,9 +380,24 @@
                     bian_zhi_table[i + 3] = zhi_name_map[zhi] + wuxing_name_map[zhi_wuxing_map[zhi]];
                     zhi = ((zhi + (zhi % 2 == 1 ? -2 : 2)) + 12) % 12;
                 }
+                zhi = gz_map[fu_bin & 7][0][1];
+                for (let i = 0; i < 3; ++i) {
+                    zhi_table_fu[i] = zhi;
+                    fu_wx_enum_table[i] = zhi_wuxing_map[zhi];
+                    fu_zhi_table[i] = zhi_name_map[zhi] + wuxing_name_map[zhi_wuxing_map[zhi]];
+                    zhi = ((zhi + (zhi % 2 == 1 ? -2 : 2)) + 12) % 12;
+                }
+                zhi = gz_map[fu_bin >> 3][1][1];
+                for (let i = 0; i < 3; ++i) {
+                    zhi_table_fu[i + 3] = zhi;
+                    fu_wx_enum_table[i + 3] = zhi_wuxing_map[zhi];
+                    fu_zhi_table[i + 3] = zhi_name_map[zhi] + wuxing_name_map[zhi_wuxing_map[zhi]];
+                    zhi = ((zhi + (zhi % 2 == 1 ? -2 : 2)) + 12) % 12;
+                }
                 
                 liuqin_table = [];
                 liuqin_table_bian = [];
+                liuqin_table_fu = [];
                 ben_wx = wuxing_map[ben_gong_bin];
                 xdwx = ben_wx;
                 var bian_wx = wuxing_map[bian_gong_bin];
@@ -380,28 +417,43 @@
                     else if (ben_wx_enum_table[i] == wuxing_ke_map[ben_wx]) {
                         liuqin_table[i] = "妻财";
                     }
-                    if (bian_wx_enum_table[i] == bian_wx) {
+                    if (bian_wx_enum_table[i] == ben_wx) {
                         liuqin_table_bian[i] = "兄弟";
                     }
-                    else if (wuxing_sheng_map[bian_wx_enum_table[i]] == bian_wx) {
+                    else if (wuxing_sheng_map[bian_wx_enum_table[i]] == ben_wx) {
                         liuqin_table_bian[i] = "父母";
                     }
-                    else if (bian_wx_enum_table[i] == wuxing_sheng_map[bian_wx]) {
+                    else if (bian_wx_enum_table[i] == wuxing_sheng_map[ben_wx]) {
                         liuqin_table_bian[i] = "子孙";
                     }
-                    else if (wuxing_ke_map[bian_wx_enum_table[i]] == bian_wx) {
+                    else if (wuxing_ke_map[bian_wx_enum_table[i]] == ben_wx) {
                         liuqin_table_bian[i] = "官鬼";
                     }
-                    else if (bian_wx_enum_table[i] == wuxing_ke_map[bian_wx]) {
+                    else if (bian_wx_enum_table[i] == wuxing_ke_map[ben_wx]) {
                         liuqin_table_bian[i] = "妻财";
+                    }
+                    if (fu_wx_enum_table[i] == ben_wx) {
+                        liuqin_table_fu[i] = "兄弟";
+                    }
+                    else if (wuxing_sheng_map[fu_wx_enum_table[i]] == ben_wx) {
+                        liuqin_table_fu[i] = "父母";
+                    }
+                    else if (fu_wx_enum_table[i] == wuxing_sheng_map[ben_wx]) {
+                        liuqin_table_fu[i] = "子孙";
+                    }
+                    else if (wuxing_ke_map[fu_wx_enum_table[i]] == ben_wx) {
+                        liuqin_table_fu[i] = "官鬼";
+                    }
+                    else if (fu_wx_enum_table[i] == wuxing_ke_map[ben_wx]) {
+                        liuqin_table_fu[i] = "妻财";
                     }
                 }
 
 
                 var resultTable = "";
                 for(var i = 0; i < 6; i++) {
-                    var shiyao = (i == shi_pos ? "世爻" : "");    
-                    var yao = "<tr style=\"font-size:15px;\"><td>" + shiyao + "</td><td>" + liuqin_table[i] + "</td><td>" + ben_zhi_table[i] + "</td>";
+                    var shiyao = (i == shi_pos ? "世爻" : (i == (shi_pos + 3) % 6? "应爻" : ""));    
+                    var yao = "<tr style=\"font-size:15px;\"><td>伏</td><td>" + liuqin_table_fu[i] + "</td><td>" + fu_zhi_table[i] + "</td><td>" + shiyao + "</td><td>" + liuqin_table[i] + "</td><td>" + ben_zhi_table[i] + "</td>";
                     switch(result[i]) {
                         case 0:
                             yao += "<td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td>&emsp;&emsp;&emsp;</td><td style=\"background:black;\">&emsp;&emsp;&emsp;</td><td>X</td><td>" + bian_zhi_table[i] + "</td><td>" + liuqin_table_bian[i] + "</td>";
@@ -534,11 +586,11 @@
             var dayzhi_chr = ec.getDayZhi();
             var monthzhi_chr = ec.getMonthZhi();
             var xunkong_str = ec.getDayXunKong();
+            var dayzhi = zhi_name_map.indexOf(dayzhi_chr);
+            var monthzhi = zhi_name_map.indexOf(monthzhi_chr);
+            var daywx = zhi_wuxing_map[dayzhi];
+            var monthwx = zhi_wuxing_map[monthzhi];
             function medicalAnalysis(result) {
-                var dayzhi = zhi_name_map.indexOf(dayzhi_chr);
-                var monthzhi = zhi_name_map.indexOf(monthzhi_chr);
-                var daywx = zhi_wuxing_map[dayzhi];
-                var monthwx = zhi_wuxing_map[monthzhi];
                 var o = "";
                 if (liuchong_index.indexOf(getGuaBen(result)) != -1 || liuchong_index.indexOf(getGuaBian(result)) != -1) {
                     if (liuchong_index.indexOf(getGuaBen(result)) != -1) {
@@ -681,13 +733,13 @@
                                     else {
                                         var wangxiang = zhi_wuxing_map[zhi_table[shi_pos]] == monthwx || zhi_wuxing_map[zhi_table[shi_pos]] == wuxing_sheng_map[monthwx];
                                         var ke = zhi_wuxing_map[zhi_table[shi_pos]] == wuxing_ke_map[monthwx] || zhi_wuxing_map[zhi_table[shi_pos]] == wuxing_ke_map[daywx];
-                                        var rumu = zhi_table[shi_pos] == wuxing_swmj_map[daywx][2];
-                                        var rujue = zhi_table[shi_pos] == wuxing_swmj_map[daywx][3];
+                                        var rumu = dayzhi == wuxing_swmj_map[zhi_wuxing_map[zhi_table[shi_pos]]][2];
+                                        var rujue = dayzhi == wuxing_swmj_map[zhi_wuxing_map[zhi_table[shi_pos]]][3];
                                         var huamu = result[shi_pos] == 0 || result[shi_pos] == 3;
                                         var huajue = huamu;
                                         if (huamu) {
-                                            huamu = zhi_table_bian[shi_pos] == wuxing_swmj_map[daywx][2];
-                                            huajue = zhi_table_bian[shi_pos] == wuxing_swmj_map[daywx][3];
+                                            huamu = dayzhi == wuxing_swmj_map[zhi_wuxing_map[zhi_table_bian[shi_pos]]][2];
+                                            huajue = dayzhi == wuxing_swmj_map[zhi_wuxing_map[zhi_table_bian[shi_pos]]][3];
                                         }
                                         if (!wangxiang && (ke || rumu || rujue || huamu || huajue)) {
                                             if (ke) {
@@ -721,6 +773,35 @@
                                             }
                                         }
                                         else {
+                                            let gui_lin_chang_sheng = false;
+                                            let gui_hua_chang_sheng = false;
+                                            let gui_dong = false;
+                                            for (let i = 0; i < 6; ++i) {
+                                                if (liuqin_table[i] == "官鬼") {
+                                                    gui_lin_chang_sheng ||= wuxing_swmj_map[zhi_wuxing_map[zhi_table[i]]][0] == dayzhi;
+                                                    if (result[i] == 0 || result[i] == 3) {
+                                                        gui_dong = true;
+                                                        gui_hua_chang_sheng ||= wuxing_swmj_map[zhi_wuxing_map[zhi_table_bian[i]]][0] == dayzhi;
+                                                    }
+                                                }
+                                            }
+                                            if (gui_lin_chang_sheng || gui_hua_chang_sheng || gui_dong) {
+                                                o += "鬼";
+                                                if (!gui_dong) {
+                                                    o += "临长生，病势必增"
+                                                }
+                                                else if (!gui_hua_chang_sheng) {
+                                                    o += "爻发动，病势必重";
+                                                    if (gui_lin_chang_sheng) {
+                                                        o += "；又临长生，病势必增";
+                                                    }
+                                                }
+                                                else {
+                                                    o += "动化长生，病势必增";
+                                                }
+                                                o += "，凶";
+                                                return o;
+                                            }
                                             let yuan_dong = false, ji_dong = false, chou_dong = false;
                                             for (let i = 0; i < 6; ++i) {
                                                 if (result[i] == 0 || result[i] == 3) {
@@ -731,14 +812,29 @@
                                                 }
                                             }
                                             if (ji_dong) {
-                                                if (!yuan_dong) {
-                                                    o += "忌神发动，凶";
-                                                }
-                                                else if (chou_dong) {
-                                                    o += "忌神、元神、仇神同动，凶";
+                                                if (yuan_dong && !chou_dong) {
+                                                    o += "忌神、元神同动，尚有救，小吉";
                                                 }
                                                 else {
-                                                    o += "忌神、元神同动，尚有救，小吉";
+                                                    let jin = false;
+                                                    let tui = false;
+                                                    for (let i = 0; i < 6; ++i) {
+                                                        if ((result[i] == 0 || result[i] == 3) && zhi_wuxing_map[zhi_table[i]] == jishen_wx) {
+                                                            jin ||= is_jin(zhi_table[i], zhi_table_bian[i]);
+                                                            tui ||= is_jin(zhi_table_bian[i], zhi_table[i]);
+                                                        }
+                                                    }
+                                                    // if (jin && tui) {
+                                                    //     o += "忌神此化进而彼化退，病势将此消彼长，凶";
+                                                    // }
+                                                    if (jin) {
+                                                        o += "忌神化进，病势将增，凶";
+                                                        return o;
+                                                    }
+                                                    else if (tui) {
+                                                        o += "忌神化退，病势渐减，小凶";
+                                                        return o;
+                                                    }
                                                 }
                                             }
                                             else if ((getGuaBenBinary(result) >> 3) == (gua_fanyin_binary_map[getGuaBianBinary(result) >> 3]) || (getGuaBenBinary(result) & 7) == (gua_fanyin_binary_map[getGuaBianBinary(result) & 7])) {
@@ -747,7 +843,7 @@
                                                 o += "卦反吟，病情反复，凶";
                                             }
                                             else {
-                                                o += "子孙、忌神未发动，卦无反吟，吉";
+                                                o += "子孙、官鬼、忌神均未发动，卦无反吟，吉";
                                             }
                                         }
                                         
@@ -757,6 +853,159 @@
                         }
                     }
                 }
+                return o;
+            }
+            function diagnosis(result) {
+                var ying_pos = (shi_pos + 3) % 6;
+                const wx_jing_map = ["肺", "肝", "脾", "肾", "心"];
+                const yao_wei = ["初九", "九二", "九三", "九四", "九五", "上九", "初六", "六二", "六三", "六四", "六五", "上六"];
+                const position_name = ["足", "股/膝", "腹/小腹/腰/臀/肛门/小便", "胸/胃/乳", "面/项/手", "头脑"];
+                const face_name = ["右耳", "左耳", "鼻", "口", "目"];
+                var o = "";
+                let gui_wx = wuxing_ke_map.indexOf(ben_wx);
+                let cai_wx = wuxing_ke_map[ben_wx];
+                o += "官鬼属" + wuxing_name_map[gui_wx] + "，病在" + wx_jing_map[gui_wx] + "经。<br>";
+                var yao_wei_table = [0,0,0,0,0,0,0,0,0,0,0,0];
+                var position_table = [];
+                var gui_zhi_table = [0,0,0,0,0,0,0,0,0,0,0,0];
+                for (let i = 0; i < 6; ++i) {
+                    let flag = false;
+                    if (liuqin_table[i] == "官鬼") {
+                        yao_wei_table[i + (result[i] % 2 == 1? 0 : 6)] = true;
+                        flag = true;
+                        gui_zhi_table[zhi_table[i]] = true;
+                    }
+                    if (liuqin_table_fu[i] == "官鬼") {
+                        yao_wei_table[i + ((fu_bin >> i) & 1? 6 : 0)] = true;
+                        flag = true;
+                        gui_zhi_table[zhi_table_fu[i]] = true;
+                    }
+                    if (liuqin_table_bian[i] == "官鬼" && (result[i] == 0 || result[i] == 3)) {
+                        yao_wei_table[i + (result[i] % 2 == 1? 6 : 0)] = true;
+                        flag = true;
+                        gui_zhi_table[zhi_table_bian[i]] = true;
+                    }
+                    if (flag) {
+                        position_table[position_table.length] = position_name[i];
+                    }
+                }
+                for (let i = 0; i < 6; ++i) {
+                    if (yao_wei_table[i] || yao_wei_table[i + 6]) {
+                        o += "官鬼在";
+                        if (yao_wei_table[i]) {
+                            o += yao_wei[i];
+                            if (yao_wei_table[i + 6]) {
+                                o += "、" + yao_wei[i + 6];
+                            }
+                        }
+                        else {
+                            o += yao_wei[i + 6];
+                        }
+                        o += "，" + position_name[i];
+                        if (i == 4) {
+                            o += "（" + face_name[gui_wx] + "）";
+                        }
+                        o += "带疾。<br>";
+                    }
+                }
+                flag = false;
+                for (let i = 0; i < 6; ++i) {
+                    if (liuqin_table[i] == "妻财") {
+                        flag = true;
+                        break;
+                    }
+                    if (result[i] == 0 || result[i] == 3) {
+                        if (liuqin_table_bian[i] == "妻财") {
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+                if (!flag) {
+                    o += "卦内无财，饮食不纳。";
+                }
+                else {
+                    let cai_dong = [];
+                    let cai_jing = [];
+                    for (let i = 0; i < 6; ++i) {
+                        if (result[i] == 0 || result[i] == 3) {
+                            if (liuqin_table[i] == "妻财") {
+                                cai_dong[cai_dong.length] = zhi_table[i];
+                            }
+                            if (liuqin_table_bian[i] == "妻财") {
+                                cai_jing[cai_jing.length] = zhi_table_bian[i];
+                            }
+                        }
+                        else if (liuqin_table[i] == "妻财") {
+                            cai_dong[cai_dong.length] = zhi_table[i];
+                        }
+                    }
+                    flag = false;
+                    if (cai_dong.length > 0) {
+                        for (let i = 0; i < cai_dong.length; ++i) {
+                            if (xunkong_str.indexOf(zhi_name_map[cai_dong[i]]) != -1) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        for (let i = 0; i < cai_jing.length; ++i) {
+                            if (xunkong_str.indexOf(zhi_name_map[cai_jing[i]]) != -1) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    /* if (flag) {
+                        if (wuxing_swmj_map[cai_wx][3] == dayzhi) {
+                            o += "妻财空绝，饮食不纳";
+                        }
+                        else {
+                            o += "妻财旬空，饮食不纳";
+                        }
+                    } */
+                    if (wuxing_swmj_map[cai_wx][3] == dayzhi || flag) {
+                        o += "妻财空绝，饮食不纳。";
+                        if (wuxing_swmj_map[cai_wx][3] == dayzhi) {
+                            o += "禄入绝乡，将不进食而死。";
+                        }
+                        let gui_hua_cai = false;
+                        for (let i = 0; i < 6; ++i) {
+                            if (result[i] == 0 || result[i] == 3) {
+                                if (liuqin_table[i] == "官鬼" && liuqin_table_bian[i] == "妻财") {
+                                    gui_hua_cai = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (gui_hua_cai) {
+                            o += "幸而鬼动化财，饮食仍进。";
+                        }
+                    }
+                    let cai_hua_gui_xiong = false;
+                    for (let i = 0; i < 6; ++i) {
+                        if (result[i] == 0 || result[i] == 3) {
+                            if (liuqin_table[i] == "妻财" && (liuqin_table_bian[i] == "官鬼" || liuqin_table_bian[i] == "兄弟")) {
+                                cai_hua_gui_xiong = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (cai_hua_gui_xiong) {
+                        o += "财化鬼兄，因食增病。";
+                    }
+                }
+                o += "忌食";
+                const animals = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"];
+                const foods = ["葱蒜姜辣辛物", "果核酸物", "米面茄芋瓜蔬甘物", "鱼腥冷物咸物", "煿炙煎炒香味苦物"];
+                gui_zhi_table[4] = false;
+                for (let i = 0; i < 12; ++i) {
+                    if (gui_zhi_table[i]) {
+                        o += animals[i] + "肉、";
+                    }
+                }
+                o += foods[gui_wx] + "。";
                 return o;
             }
             
@@ -891,6 +1140,7 @@
                 }
                 
                 o += "<br><h2>六爻断法：</h2>" + medicalAnalysis(result);
+                o += "<br><h2>诊断：</h2>" + diagnosis(result);
 
                 document.getElementById("outputBox").innerHTML = o;
 
@@ -910,10 +1160,12 @@
             </select>
             <br>
             <label>疾病类型:</label>
+            <br>
             <input type="radio" id="long" name="disorder_type" value="long" checked>
-            <label for="long">久病</label>
+            <label for="long">久病（长期慢性疾病，通常在三个月以上）</label>
+            <br>
             <input type="radio" id="recent" name="disorder_type" value="recent">
-            <label for="recent">近病</label>
+            <label for="recent">近病（近期或突然获得的疾病，通常在三个月以内）</label>
             <br>
             <label for="yongshen">病人的身份是：</label>
             <select id="yongshen" name="yongshen">

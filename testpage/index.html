@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="description" content="量表填写页">
+        <meta name="keywords" content="">
+        <meta name="author" content="挑战杯参赛小组">
+        <meta charset="utf-8">
+        <style type="text/css">
+            .button {
+                background-color: #70d230;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                border-radius: 10px;
+            }
+            .button:hover {
+                background-color: #37b02c;
+            }
+        </style>
+        <script>
+        </script>
+        <title>量表填写页</title>
+    </head>
+    <body id="body" style="text-align: center;">
+    <h2>以下为表单</h2>
+        <form id="form" style="width: fit-content; text-align: left; margin: auto;">
+            <label>这里可以加入:</label><br>
+            <input type="radio" id="t1" name="T" value="none" checked>
+            <label for="t1">复杂的逻辑</label><br>
+            <input type="radio" id="t2" name="T" value="none">
+            <label for="t2">美观的背景</label><br>
+            <input type="radio" id="t3" name="T" value="none">
+            <label for="t3">党的全面领导</label><br><br>
+            <label>最终的风险等级是:</label><br>
+            <input type="radio" id="low" name="risk" value="low" checked>
+            <label for="low">低</label><br>
+            <input type="radio" id="medium" name="risk" value="medium">
+            <label for="medium">中</label><br>
+            <input type="radio" id="high" name="risk" value="high">
+            <label for="high">高</label><br><br>
+            <label>用户偏好:</label><br>
+            <input type="radio" id="human" name="pref" value="human" checked>
+            <label for="human">人工</label><br>
+            <input type="radio" id="ai" name="pref" value="ai">
+            <label for="ai">人工智能</label><br>
+        </form>
+        <br>
+        <button id="mainButton" class="button" onclick="mainFunc()">提交表单</button>
+        <br>
+
+        <div style="font-size: small; text-align: center; color: gray;">
+            <br><br><br>
+            此处可填写版权信息。
+        </div>
+        <script>
+            function mainFunc() {
+                let risk = document.forms["form"]["risk"].value
+                let pref = document.forms["form"]["pref"].value
+                let url = "/dest/"
+                if (risk === "high") {
+                    url += "call.html"
+                }
+                else if (risk === "medium") {
+                    url += "resource_m.html"
+                }
+                else {
+                    if (pref === "ai") {
+                        url += "chat.html"
+                    }
+                    else {
+                        url += "resource_l.html"
+                    }
+                }
+                window.location.href += url
+            }
+		</script>
+    </body>
+</html>

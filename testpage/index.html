@@ -1,82 +1,150 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta name="description" content="量表填写页">
-        <meta name="keywords" content="">
-        <meta name="author" content="挑战杯参赛小组">
-        <meta charset="utf-8">
-        <style type="text/css">
-            .button {
-                background-color: #70d230;
-                border: none;
-                color: white;
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 10px;
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>对话记录</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .message {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .user {
+            justify-content: flex-end;
+        }
+        .ai img, .user img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .user img {
+            margin-left: 10px;
+            margin-right: 0;
+        }
+        @keyframes emerge {
+            from {
+                opacity: 0;
+                filter: alpha(opacity=0);
             }
-            .button:hover {
-                background-color: #37b02c;
+            to {
+                opacity: 1;
+                filter: alpha(opacity=100);
             }
-        </style>
-        <script>
-        </script>
-        <title>量表填写页</title>
-    </head>
-    <body id="body" style="text-align: center;">
-    <h2>以下为表单</h2>
-        <form id="form" style="width: fit-content; text-align: left; margin: auto;">
-            <label>这里可以加入:</label><br>
-            <input type="radio" id="t1" name="T" value="none" checked>
-            <label for="t1">复杂的逻辑</label><br>
-            <input type="radio" id="t2" name="T" value="none">
-            <label for="t2">美观的背景</label><br>
-            <input type="radio" id="t3" name="T" value="none">
-            <label for="t3">党的全面领导</label><br><br>
-            <label>最终的风险等级是:</label><br>
-            <input type="radio" id="low" name="risk" value="low" checked>
-            <label for="low">低</label><br>
-            <input type="radio" id="medium" name="risk" value="medium">
-            <label for="medium">中</label><br>
-            <input type="radio" id="high" name="risk" value="high">
-            <label for="high">高</label><br><br>
-            <label>用户偏好:</label><br>
-            <input type="radio" id="human" name="pref" value="human" checked>
-            <label for="human">人工</label><br>
-            <input type="radio" id="ai" name="pref" value="ai">
-            <label for="ai">人工智能</label><br>
-        </form>
-        <br>
-        <button id="mainButton" class="button" onclick="mainFunc()">提交表单</button>
-        <br>
-
-        <div style="font-size: small; text-align: center; color: gray;">
-            <br><br><br>
-            此处可填写版权信息。
+        }
+        @-webkit-keyframes emerge {
+            from {
+                opacity: 0;
+                filter: alpha(opacity=0);
+            }
+            to {
+                opacity: 1;
+                filter: alpha(opacity=100);
+            }
+        }
+        .message-content {
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            line-height: 1.4;
+            animation: emerge 1s;
+        }
+        .user .message-content {
+            background-color: #8cf886;
+            align-self: flex-end;
+        }
+        .ai .message-content {
+            background-color: #a0f0ab;
+            align-self: flex-start;
+        }
+        .button {
+            background-color: #70d230;
+            border: none;
+            color: white;
+            padding: 5px 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+        .button:hover {
+            background-color: #37b02c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="message ai" id="msg-1">
+            <img src="https://scp-wiki.wdfiles.com/local--files/scp-3021/a.png" alt="AI Icon">
+            <div class="message-content">
+                你要不要听阉鸡的笑话？
+            </div>
         </div>
-        <script>
-            function mainFunc() {
-                let risk = document.forms["form"]["risk"].value
-                let pref = document.forms["form"]["pref"].value
-                let url = "/dest/"
-                if (risk === "high") {
-                    url += "call.html"
-                }
-                else if (risk === "medium") {
-                    url += "resource_m.html"
-                }
-                else {
-                    if (pref === "ai") {
-                        url += "chat.html"
-                    }
-                    else {
-                        url += "resource_l.html"
-                    }
-                }
-                window.location.href += url
+        <div class="message user">
+            <div class="message-content" id="msg-2">
+                <button class="button" onclick="change_text('msg-2', '要');add_ai('我没让你说“要”，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">要</button>
+                <button class="button" onclick="change_text('msg-2', '不要');add_ai('我没让你说“不要”，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">不要</button>
+                <button class="button" onclick="change_text('msg-2', '我要走了');add_ai('我没让你走，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">我要走了</button>
+                <button class="button" onclick="change_text('msg-2', '……');add_ai('我没让你不说话，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">……</button>
+            </div>
+            <img src="https://scp-wiki.wdfiles.com/local--files/scp-3021/b.png" alt="User Icon">
+        </div>
+    </div>
+    <script>
+        let counter = 2;
+        function chicken_buttons(i) {
+            return `
+                <button class="button" onclick="change_text('msg-${i}', '要');add_ai('我没让你说“要”，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">要</button>
+                <button class="button" onclick="change_text('msg-${i}', '不要');add_ai('我没让你说“不要”，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">不要</button>
+                <button class="button" onclick="change_text('msg-${i}', '我要走了');add_ai('我没让你走，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">我要走了</button>
+                <button class="button" onclick="change_text('msg-${i}', '……');add_ai('我没让你不说话，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">……</button>
+            `
+        }
+        function change_text(id, text) {
+            let element = document.getElementById(id);
+            let buttons = document.getElementsByClassName("button");
+            for (let i = 0; i < buttons.length; i++) {
+                element.removeChild(buttons[i]);
             }
-		</script>
-    </body>
+            element.innerHTML = text;
+        }
+        function add_ai(content) {
+            counter += 1;
+            let msg = document.createElement('div');
+            msg.className = 'message ai';
+            msg.innerHTML = `
+                <img src="https://scp-wiki.wdfiles.com/local--files/scp-3021/a.png" alt="AI Icon">
+                <div class="message-content" id = "msg-${counter}">${content}</div>
+            `;
+            document.querySelector('.container').appendChild(msg);
+        }
+        function add_user(content) {
+            counter += 1;
+            let msg = document.createElement('div');
+            msg.className = 'message user';
+            msg.innerHTML = `
+                <div class="message-content" id = "msg-${counter}">${content}</div>
+                <img src="https://scp-wiki.wdfiles.com/local--files/scp-3021/b.png" alt="User Icon">
+            `;
+            document.querySelector('.container').appendChild(msg);
+        }
+    </script>
+</body>
 </html>

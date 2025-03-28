@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>对话记录</title>
+    <title>对话页</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -78,6 +78,7 @@
             border: none;
             color: white;
             padding: 5px 5px;
+            margin: 5px 5px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
@@ -91,32 +92,9 @@
 </head>
 <body>
     <div class="container">
-        <div class="message ai" id="msg-1">
-            <img src="https://scp-wiki.wdfiles.com/local--files/scp-3021/a.png" alt="AI Icon">
-            <div class="message-content">
-                你要不要听阉鸡的笑话？
-            </div>
-        </div>
-        <div class="message user">
-            <div class="message-content" id="msg-2">
-                <button class="button" onclick="change_text('msg-2', '要');add_ai('我没让你说“要”，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">要</button>
-                <button class="button" onclick="change_text('msg-2', '不要');add_ai('我没让你说“不要”，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">不要</button>
-                <button class="button" onclick="change_text('msg-2', '我要走了');add_ai('我没让你走，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">我要走了</button>
-                <button class="button" onclick="change_text('msg-2', '……');add_ai('我没让你不说话，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">……</button>
-            </div>
-            <img src="https://scp-wiki.wdfiles.com/local--files/scp-3021/b.png" alt="User Icon">
-        </div>
     </div>
     <script>
-        let counter = 2;
-        function chicken_buttons(i) {
-            return `
-                <button class="button" onclick="change_text('msg-${i}', '要');add_ai('我没让你说“要”，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">要</button>
-                <button class="button" onclick="change_text('msg-${i}', '不要');add_ai('我没让你说“不要”，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">不要</button>
-                <button class="button" onclick="change_text('msg-${i}', '我要走了');add_ai('我没让你走，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">我要走了</button>
-                <button class="button" onclick="change_text('msg-${i}', '……');add_ai('我没让你不说话，而是问你要不要听阉鸡的笑话。');add_user(chicken_buttons(counter+1))">……</button>
-            `
-        }
+        let counter = 0;
         function change_text(id, text) {
             let element = document.getElementById(id);
             let buttons = document.getElementsByClassName("button");
@@ -145,6 +123,93 @@
             `;
             document.querySelector('.container').appendChild(msg);
         }
+        function node(ai_text, choices, side_effects, children) {
+            if (side_effects === undefined) {
+                side_effects = [];
+            }
+            return {ai_text: ai_text, choices: choices, side_effects: side_effects, children: children};
+        }
+        let quest_node = node("您此次咨询体验如何？是否有接受其他方面帮助的需求？", ["我想学习心理自助。", "我想找真人进行心理咨询。", "我想了解国内付费AI服务。", "能不能推荐一些国外的AI？"])
+        let insuff_node = node("本产品暂时无法对您提供实质性帮助，建议您尽快寻求专业的医疗支持。<br>您可以在<a href='dest/resource_m.html'>这里</a>找到一些相关的资源。<br>如您遇到了紧急情况，建议您", []);
+        let mobile = navigator.userAgent.match(/Mobi/i) || navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/iPhone/i);
+        if (mobile) {
+            insuff_node.ai_text += "点击下方按钮拨打希望24热线，及时寻求帮助。<br><a class=\"button\" href=\"tel:4001619995\">拨打电话</a>";
+        }
+        else {
+            insuff_node.ai_text += "拨打希望24热线（400-161-9995）等危机干预热线，及时寻求帮助。";
+        }
+
+        let score = 0;
+        let low_node = node("感谢您完成量表填写！<br>结果显示您无抑郁。请问您希望咨询哪方面的问题？", ["我有些迷茫，想咨询未来规划。", "我最近压力比较大，想要陪伴和指导。", "我心情不太好，希望得到一些情感支持。", "我的问题比较复杂，想得到一些专业的帮助。"]);
+        let med_str = '感谢您完成量表填写！<br>结果显示您患有轻度抑郁。系统为您自动匹配最有专业胜任力的AI：<br><a class="button" href="https://github.com/KarolynW/EmoGPT/blob/main/README.md">EmoGPT</a>'
+        let scale_nodes = [];
+        function set_scale_exit() {
+            let scale_node_exit = node("",[]);
+            if (score <= 13) {
+                scale_node_exit = low_node;
+            }
+            else if (score <= 19) {
+                quest_node.ai_text = med_str + quest_node.ai_text;
+                scale_node_exit = quest_node;
+            }
+            else {
+                insuff_node.ai_text = "感谢您完成量表填写！<br>结果显示您患有中度至重度抑郁。" + insuff_node.ai_text;
+                scale_node_exit = insuff_node;
+            }
+            scale_nodes[20].children = [scale_node_exit,scale_node_exit,scale_node_exit,scale_node_exit];
+        }
+        let bk_list = [['我不觉得悲伤', '很多时候我都感到悲伤', '所有时间我都感到悲伤', '我太悲伤或太难过，不堪忍受'], ['我没有对未来失去信心', '我比以往更加对未来没有信心', '我感到前景黯淡', '我觉得将来毫无希望，且只会变得更糟'], ['我不觉得自己是个失败者', '我的失败比较多', '回首往事，我看到一大堆的失败', '我觉得自己是一个彻底的失败者'], ['我和过去一样能从喜欢的事情中得到乐趣', '我不能像过去一样从喜欢的事情中得到乐趣', '我从过去喜欢的事情中获得的快乐很少', '我完全不能从过去喜欢的事情中获得快乐'], ['我没有特别的内疚感', '我对自己做过或该做但没做的许多事感到内疚', '在大部分时间里我都感到内疚', '我任何时候都感到内疚'], ['我没觉得自己在受惩罚', '我觉得自己可能会受到惩罚', '我觉得自己会受到惩罚', '我觉得正在受到惩罚'], ['我对自己的感觉同过去一样', '我对自己丧失了信心', '我对自己感到失望', '我讨厌我自己'], ['与过去相比，我没有更多的责备或批评自己', '我比过去责备自己更多', '只要我有过失，我就责备自己', '只要发生不好的事情，我就责备自己'], ['我没有任何自杀的想法', '我有自杀的想法，但我不会去做', '我想自杀', '如果有机会我就会自杀'], ['和过去比较，我哭的次数并没有增加', '我比过去哭的多', '现在任何小事都会让我哭', '我想哭，但哭不出来'], ['我现在没有比过去更加烦躁', '我现在比过去更容易烦躁', '我非常烦躁或不安，很难保持安静', '我非常烦躁不安，必须不停走动或做事情'], ['我对其他人或活动没有失去兴趣', '和过去相比，我对其他人或事的兴趣减少了', '我失去了对其他人或事的大部分兴趣', '任何事情都很难引起我的兴趣'], ['我现在能和过去一样作决定', '我现在作决定比以前困难', '我作决定比以前困难了很多', '我作任何决定都很困难'], ['我不觉得自己没有价值', '我认为自己不如过去有价值或有用了', '我觉得自己不如别人有价值', '我觉得自己毫无价值'], ['我和过去一样有精力', '我不如从前有精力', '我没有精力做很多事情', '我做任何事情都没有足够的精力'], ['我没觉得睡眠有什么变化', '我的睡眠比过去略少，或略多', '我的睡眠比以前少了很多，或多了很多', '我根本无法睡觉，或我一直想睡觉'], ['我并不比过去容易发火', '与过去相比，我比较容易发火', '与过去相比，我非常容易发火', '我现在随时都很容易发火'], ['我没觉得食欲有什么变化', '我的食欲比过去略差，或略好', '我的食欲比去过去差了很多，或好很多', '我完全没有食欲，或总是非常渴望吃东西'], ['我和过去一样可以集中精神', '我无法像过去一样集中精神', '任何事情都很难让我长时间集中精神', '任何事情都无法让我集中精神'], ['我没觉得比过去累或乏力', '我比过去更容易累或乏力', '因为太累或者太乏力，许多过去常做的事情不能做了', '因为太累或者太乏力，大多数过去常做的事情都不能做了'], ['我没觉得最近对性的兴趣有什么变化', '我对性的兴趣比过去少了', '现在我对性的兴趣少多了', '我对性的兴趣已经完全丧失']];
+        function scale_node(i) {
+            let choices = bk_list[i - 1];
+            let final = (i === bk_list.length);
+            if (final) {
+                return node(`请回答第${i}题：以下哪个陈述句最符合您过去两周内（包括今天）的状态？如有多个符合，选择程度较严重的一项。`, choices, [set_scale_exit,function(){score+=1;set_scale_exit();},function(){score+=2;set_scale_exit();},function(){score+=3;set_scale_exit();}]);
+            }
+            return node(`请回答第${i}题：以下哪个陈述句最符合您过去两周内（包括今天）的状态？如有多个符合，选择程度较严重的一项。`, choices, [function(){},function(){score+=1;},function(){score+=2;},function(){score+=3;}]);
+        }
+        let suicide_node = node("");
+        for (let i = 0; i < 21; ++i) {
+            scale_nodes.push(scale_node(i + 1));
+        }
+        scale_nodes[0].ai_text = "为更好地向您提供服务，请您跟随我进行贝克抑郁量表的填写流程。<br>" + scale_nodes[0].ai_text;
+
+        let root_node = node("您好！在开始之前，请问您是否同意我们的隐私政策？", ["我同意", "我不同意"]);
+        let node1 = node("感谢您的支持。<br>您在过去2年内是否有心理疾病的医院诊断？", ["有", "没有"]);
+        let node2 = node("感谢您的反馈。", []);
+        let node3 = node("鉴于您的状况，我们建议您寻找专业的人工心理咨询。如您遇到了紧急情况，建议您尽快就医。")
+
+        root_node.children = [node1, node2];
+        node1.children = [node3, scale_nodes[0]];
+        for (let i = 0; i < 20; ++i) {
+            scale_nodes[i].children = [scale_nodes[i+1],scale_nodes[i+1],scale_nodes[i+1],scale_nodes[i+1]];
+        }
+        scale_nodes[8].children[2] = scale_nodes[8].children[3] = insuff_node;
+        scale_nodes[8].side_effects[2] = scale_nodes[8].side_effects[3] = function (){insuff_node.ai_text = "鉴于您目前所具有的自杀倾向，" + insuff_node.ai_text;};
+
+        let current_node = root_node;
+        function use_current_node() {
+            add_ai(current_node.ai_text);
+            let user_content = "";
+            for (let i = 0; i < current_node.choices.length; i++) {
+                user_content += button(current_node.choices[i], i) + "<br>";
+            }
+            if (user_content.length > 0) {
+                add_user(user_content);
+            }
+        }
+        function choose(i) {
+            if (current_node.side_effects[i] !== undefined) {
+                current_node.side_effects[i]();
+            }
+            current_node = current_node.children[i];
+            use_current_node();
+        }
+        function button(text, i) {
+            let str_begin = `<button class="button" id = "${text}" onclick="`;
+            let str_end = `'${text}');choose(${i})">${text}</button>`;
+            return str_begin + "change_text(`msg-${counter}`," + str_end;
+        }
+        use_current_node();
     </script>
 </body>
 </html>

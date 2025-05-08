@@ -93,7 +93,8 @@
             function magic_f(y, m, d) {
                 return (magic_f_list[m - 1][y % 20] + d) % 10;
             }
-            var nextPageBaseUrl = "https://amen-under-wu.github.io/EightCharPage.html";
+            let nextPageBaseUrl = window.location.href;
+            nextPageBaseUrl = nextPageBaseUrl.substring(0, nextPageBaseUrl.lastIndexOf("/") + 1) + "EightCharPage.html";
             function mainFunc() {
                 var y = Number(document.forms["form"]["year"].value);
                 var m = Number(document.forms["form"]["month"].value);

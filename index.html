@@ -3,10 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Amen under Wu个人网页跃迁中心</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="cosmos/biupiukiu_like.css" rel="stylesheet"/>
+    <style>
+        #warp-panel {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        #warp-panel button {
+            width: 90%;
+            background-color: #e43131;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #warp-panel button:hover {
+            background-color: #af1d1d;
+        }
+    </style>
+
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 <script>
     const non_secret_coordinate = ["EightCharPage", "ghostvalley", "medic"];
+    function handleEnter(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // 阻止默认的提交行为
+            jump(); // 调用你自定义的函数
+        }
+    }
     function jump() {
         let coordinate = document.forms["form"]["coordinate"].value;
         let key = "key";
@@ -17,16 +46,36 @@
         let path = window.location.href;
         path = path.substring(0, path.lastIndexOf("/") + 1) + `cosmos/${coordinate}.html?key=${key}`;
         window.location.href = path;
+        return false;
     }
 </script>
 <body>
-<div align="center">
-    <form id="form">
-        坐标：<label for="coordinate">
-        <input type="text" name="coordinate">
-    </label><br>
-    </form>
-    <button onclick="jump()">启动跃迁引擎</button>
+<div class="w3-top">
+  <div class="w3-bar w3-black w3-card">
+    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+    <a href="index.html" class="w3-bar-item w3-button w3-padding-large" target="_self">AuW</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">正在</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">装修</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">敬请</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">期待</a>
+  </div>
+</div>
+<div class="w3-content" style="max-width:2000px;margin-top:46px">
+  <div class="w3-container w3-content w3-center w3-padding-32" style="max-width:800px" id="gq">
+      <h3 class="w3-wide">欢迎来到</h3>
+      <h4 class="w3-wide">Amen-under-Wu个人网页</h4>
+      <h2 class="w3-wide">跃迁中心</h2>
+      <div id="warp-panel">
+          <div align="center">
+              <form id="form" onsubmit="event.preventDefault()">
+                  <p>请输入跃迁坐标：</p>
+                  <input type="text" name="coordinate" onkeydown="handleEnter(event)">
+              </label><br>
+              </form>
+              <button onclick="jump()">启动跃迁引擎</button>
+          </div>
+      </div>
+  </div>
 </div>
 </body>
 </html>

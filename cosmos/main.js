@@ -1,5 +1,6 @@
 const searchParams = new URLSearchParams(window.location.search);
 const key = searchParams.get("key");
+const non_secret_coordinate = ["EightCharPage", "ghostvalley", "medic"];
 function jump_to(coordinate) {
     let key = "key";
     if (non_secret_coordinate.indexOf(coordinate) === -1) {

@@ -32,16 +32,16 @@
     const non_secret_coordinate = ["EightCharPage", "ghostvalley", "medic"];
     function handleEnter(event) {
         if (event.key === "Enter") {
-            event.preventDefault(); // 阻止默认的提交行为
-            jump(); // 调用你自定义的函数
+            event.preventDefault();
+            jump();
         }
     }
     function jump() {
         let coordinate = document.forms["form"]["coordinate"].value;
         let key = "key";
         if (non_secret_coordinate.indexOf(coordinate) === -1) {
-            coordinate = CryptoJS.SHA256(coordinate);
             key = CryptoJS.SHA256(coordinate + "salty key");
+            coordinate = CryptoJS.SHA256(coordinate);
         }
         let path = window.location.href;
         path = path.substring(0, path.lastIndexOf("/") + 1) + `cosmos/${coordinate}.html?key=${key}`;

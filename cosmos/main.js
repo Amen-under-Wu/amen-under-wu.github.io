@@ -3,8 +3,8 @@ const key = searchParams.get("key");
 function jump_to(coordinate) {
     let key = "key";
     if (non_secret_coordinate.indexOf(coordinate) === -1) {
-        coordinate = CryptoJS.SHA256(coordinate);
         key = CryptoJS.SHA256(coordinate + "salty key");
+        coordinate = CryptoJS.SHA256(coordinate);
     }
     let path = window.location.origin;
     path += `/cosmos/${coordinate}.html?key=${key}`;
@@ -13,6 +13,7 @@ function jump_to(coordinate) {
 }
 function try_template() {
     if (typeof custom_template === "undefined") {
+        let orig_content = document.getElementById("orig-content");
         document.head.innerHTML += `
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link href="biupiukiu_like.css" rel="stylesheet"/>
@@ -32,6 +33,9 @@ function try_template() {
   </div>
 </div>`;
         document.body.innerHTML = template_str;
+        if (orig_content !== null) {
+            document.getElementById("my-container").appendChild(orig_content);
+        }
     }
 }
 

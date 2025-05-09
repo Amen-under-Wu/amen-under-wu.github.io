@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>无效坐标</title>
+</head>
+<script src="main.js"></script>
+<script>
+  function go_back() {
+    window.location.href = window.location.origin;
+  }
+</script>
+<body>
+<div id="orig-content">
+    <h4>你来到了一个无效的坐标。</h4>
+  <button onclick="go_back()">返回跃迁中心</button>
+</div>
+<script>
+    let orig_content = document.getElementById("orig-content");
+    try_template();
+    document.getElementById("my-container").appendChild(orig_content);
+</script>
+</body>
+</html>

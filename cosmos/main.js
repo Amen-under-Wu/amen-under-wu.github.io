@@ -17,6 +17,7 @@ function try_template() {
         let orig_content = document.getElementById("orig-content");
         document.head.innerHTML += `
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="biupiukiu_like.css" rel="stylesheet"/>
         `;
         let template_str = `<div class="w3-top">
@@ -28,12 +29,18 @@ function try_template() {
     <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">敬请</a>
     <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">期待</a>
   </div>
+  <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">正在</a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">装修</a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">敬请</a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">期待</a>
+</div>
 </div>
 <div class="w3-content" style="max-width:2000px;margin-top:46px">
   <div class="w3-container w3-content w3-center w3-padding-32" style="max-width:800px" id="my-container">
   </div>
 </div>`;
-        document.body.innerHTML = template_str;
+        document.body.innerHTML = template_str + '<script src="bpk.js"></script>';
         if (orig_content !== null) {
             document.getElementById("my-container").appendChild(orig_content);
         }

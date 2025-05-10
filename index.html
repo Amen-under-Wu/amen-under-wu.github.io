@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <title>Amen under Wu个人网页跃迁中心</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="cosmos/biupiukiu_like.css" rel="stylesheet"/>
     <style>
         #warp-panel {
             border-radius: 5px;
-            background-color: #f2f2f2;
+            background-color: lightgray;
             padding: 20px;
         }
         #warp-panel button {
@@ -49,7 +50,7 @@
         return false;
     }
 </script>
-<body>
+<body style="background: black">
 <div class="w3-top">
   <div class="w3-bar w3-black w3-card">
     <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
@@ -59,12 +60,18 @@
     <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">敬请</a>
     <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">期待</a>
   </div>
+    <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">正在</a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">装修</a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">敬请</a>
+  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">期待</a>
+</div>
 </div>
 <div class="w3-content" style="max-width:2000px;margin-top:46px">
   <div class="w3-container w3-content w3-center w3-padding-32" style="max-width:800px">
-      <h3 class="w3-wide">欢迎来到</h3>
-      <h4 class="w3-wide">Amen-under-Wu个人网页</h4>
-      <h2 class="w3-wide">跃迁中心</h2>
+      <h3 class="w3-wide" style="color: whitesmoke">欢迎来到</h3>
+      <h4 class="w3-wide" style="color: whitesmoke">Amen-under-Wu个人网页</h4>
+      <h2 class="w3-wide" style="color: whitesmoke">跃迁中心</h2>
       <div id="warp-panel">
           <div align="center">
               <form id="form" onsubmit="event.preventDefault()">
@@ -78,4 +85,5 @@
   </div>
 </div>
 </body>
+<script src="cosmos/bpk.js"></script>
 </html>

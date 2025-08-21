@@ -2,88 +2,87 @@
 <html lang="ch">
 <head>
     <meta charset="UTF-8">
-    <title>Amen under Wu个人网页跃迁中心</title>
+    <title>VictoriaZhou的足伤储物间</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="biupiukiu_like.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="cosmos/biupiukiu_like.css" rel="stylesheet"/>
     <style>
-        #warp-panel {
-            border-radius: 5px;
-            background-color: lightgray;
-            padding: 20px;
+        body {
+            font-family: "Lato", sans-serif
         }
-        #warp-panel button {
-            width: 90%;
-            background-color: #e43131;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+
+        .mySlides {
+            display: none
         }
-        #warp-panel button:hover {
-            background-color: #af1d1d;
+
+        #coverTxt2 {
+            font-style: italic
         }
     </style>
-
 </head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+    <div class="w3-bar w3-black w3-card">
+        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right"
+           href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                class="fa fa-bars"></i></a>
+        <a href="index.html" class="w3-bar-item w3-button w3-padding-large">AuW</a>
+        <a href="cx/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">程序</a>
+        <a href="sb/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">随笔</a>
+        <a href="xf/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">想法</a>
+        <a href="ll/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">联络</a>
+    </div>
+</div>
+
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+    <a href="cx/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">程序</a>
+    <a href="sb/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">随笔</a>
+    <a href="xf/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">想法</a>
+    <a href="ll/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">联络</a>
+</div>
+
+<!-- Page content -->
+<div class="w3-content" style="max-width:800px;margin-top:56px">
+    <div class="w3-display-container w3-center">
+        <h4 id="coverTxt1"></h4>
+        <img class="w3-round" id="coverPic" onclick="window.location.reload();" alt="cover-picture" width="300px"
+             src="#">
+        <p id="coverTxt2"></p>
+    </div>
+</div>
 <script>
-    const non_secret_coordinate = ["EightCharPage", "ghostvalley", "medic"];
-    function handleEnter(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            jump();
-        }
+    window.onload = chooseCover;
+    let coverTxt = [
+        "趣迷因 2025.7.-你说得对，后面忘了",
+        "京城景 2025.3.-从舷窗往外看，船在北平湾靠岸",
+        "京城景 2024.4.-国贸桥，撒网捕金鲫",
+        "京城景 2024.4.-生来不怕碰钉子，碰了一根化一根",
+        "像素画 2023.1.-未来心不可得",
+    ];
+
+    let randomNum = Math.floor((Math.random() * coverTxt.length));
+    let chosenTxt = coverTxt[randomNum];
+    const tempArray = chosenTxt.split("-");
+
+    function chooseCover() {
+        document.getElementById("coverPic").src = "cover/" + randomNum + ".jpg";
+        document.getElementById("coverTxt1").innerHTML = tempArray[0];
+        document.getElementById("coverTxt2").innerHTML = tempArray[1];
     }
-    function jump() {
-        let coordinate = document.forms["form"]["coordinate"].value;
-        let key = "key";
-        if (non_secret_coordinate.indexOf(coordinate) === -1) {
-            key = CryptoJS.SHA256(coordinate + "salty key");
-            coordinate = CryptoJS.SHA256(coordinate);
+
+    // Used to toggle the menu on small screens when clicking on the menu button
+    function myFunction() {
+        let x = document.getElementById("navDemo");
+        if (x.className.indexOf("w3-show") === -1) {
+            x.className += " w3-show";
+        } else {
+            x.className = x.className.replace(" w3-show", "");
         }
-        let path = window.location.href;
-        path = path.substring(0, path.lastIndexOf("/") + 1) + `cosmos/${coordinate}.html?key=${key}`;
-        window.location.href = path;
-        return false;
     }
 </script>
-<body style="background: black">
-<div class="w3-top">
-  <div class="w3-bar w3-black w3-card">
-    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-    <a href="index.html" class="w3-bar-item w3-button w3-padding-large" target="_self">AuW</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">正在</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">装修</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">敬请</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">期待</a>
-  </div>
-    <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
-  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">正在</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">装修</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">敬请</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">期待</a>
-</div>
-</div>
-<div class="w3-content" style="max-width:2000px;margin-top:46px">
-  <div class="w3-container w3-content w3-center w3-padding-32" style="max-width:800px">
-      <h3 class="w3-wide" style="color: whitesmoke">欢迎来到</h3>
-      <h4 class="w3-wide" style="color: whitesmoke">Amen-under-Wu个人网页</h4>
-      <h2 class="w3-wide" style="color: whitesmoke">跃迁中心</h2>
-      <div id="warp-panel">
-          <div align="center">
-              <form id="form" onsubmit="event.preventDefault()">
-                  <p>请输入跃迁坐标：</p>
-                  <input type="text" name="coordinate" onkeydown="handleEnter(event)">
-              </label><br>
-              </form>
-              <button onclick="jump()">启动跃迁引擎</button>
-          </div>
-      </div>
-  </div>
-</div>
 </body>
-<script src="cosmos/bpk.js"></script>
 </html>

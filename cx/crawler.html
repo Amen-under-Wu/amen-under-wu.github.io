@@ -72,7 +72,7 @@
     }
 
     async function main() {
-        let ip = "43.129.235.66";
+        let ip = "web-workshop-homework-by-fyh.site";
         let res_obj = {"/index.html" : checking};
         let flag = true;
         while (flag) {
@@ -82,7 +82,7 @@
                 if (res_obj[key] === checking) {
                     flag = true;
                     try {
-                        let response = await axios.get(`http://${ip}:20249/get-bpk-info?loc=${key}`);
+                        let response = await axios.get(`https://${ip}:20249/get-bpk-info?loc=${key}`);
                         let res_data = response.data;
                         if (res_data.status_code === 200) {
                             res_obj[key] = res_data.headers["last-modified"];

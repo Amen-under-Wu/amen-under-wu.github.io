@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>biupiukiu.net更新监测器</title>
+    <link rel="stylesheet" href="../biupiukiu_like.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+<div class="w3-top">
+    <div class="w3-bar w3-black w3-card">
+        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right"
+           href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                class="fa fa-bars"></i></a>
+        <a href="../index.html" class="w3-bar-item w3-button w3-padding-large">AuW</a>
+        <a href="../cx/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">程序</a>
+        <a href="../sb/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">随笔</a>
+        <a href="../xf/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">想法</a>
+        <a href="../ll/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">联络</a>
+    </div>
+</div>
+
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+    <a href="../cx/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">程序</a>
+    <a href="../sb/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">随笔</a>
+    <a href="../xf/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">想法</a>
+    <a href="../ll/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">联络</a>
+</div>
+<div class="w3-content" style="max-width:2000px; margin-top:46px">
+    <div class="w3-container w3-content w3-center w3-padding-32" style="max-width:800px" id="ll">
+        <h3 class="w3-wide">biupiukiu.net 更新监测器</h3>
+        <div class="w3-panel w3-round w3-left-align w3-light-grey" id="note-box">
+        </div>
+    </div>
+</div>
+<script src="../bpk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+    let checking = "检查中……";
+
+    function cmp(a, b) {
+        if (a[1] === checking) return 1;
+        if (b[1] === checking) return -1;
+        return (new Date(b[1])) - new Date(a[1]);
+    }
+
+    function my_format(date_str) {
+        let date = new Date(date_str);
+        return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+    }
+
+    function update_box(res_obj) {
+        let res_list = [];
+        for (let key in res_obj) {
+            let val = res_obj[key];
+            if (val !== undefined) {
+                res_list[res_list.length] = [key, val];
+            }
+        }
+        res_list.sort(cmp);
+        let res_str = "";
+        for (let key in res_list) {
+            let val = res_list[key];
+            res_str += `<div class="w3-panel w3-${val[1] === checking ? "yellow" : "light-green"}"><h4><a href="https://biupiukiu.net${val[0]}">biupiukiu.net${val[0]}</a></h4><p>最后更新于：${val[1] === checking ? checking : my_format(val[1])}</p></div>`;
+        }
+        document.getElementById("note-box").innerHTML = res_str;
+    }
+
+    async function main() {
+        let ip = "43.129.235.66";
+        let res_obj = {"/index.html" : checking};
+        let flag = true;
+        while (flag) {
+            update_box(res_obj);
+            flag = false;
+            for (let key in res_obj) {
+                if (res_obj[key] === checking) {
+                    flag = true;
+                    try {
+                        let response = await axios.get(`http://${ip}:20249/get-bpk-info?loc=${key}`);
+                        let res_data = response.data;
+                        if (res_data.status_code === 200) {
+                            res_obj[key] = res_data.headers["last-modified"];
+                            for (let i = 0; i < res_data.links.length; ++i) {
+                                let url = new URL(res_data.links[i], `https://biupiukiu.net${key}`);
+                                if (url.hostname === "biupiukiu.net" && res_obj[url.pathname] === undefined && [".zip", ".pdf"].indexOf(url.pathname.slice(-4)) === -1) {
+                                    res_obj[url.pathname] = checking;
+                                }
+                            }
+                        }
+                        else {
+                            res_obj[key] = false;
+                        }
+                        break;
+                    }
+                    catch (err) {
+                        console.error(err);
+                        res_obj[key] = undefined;
+                    }
+                }
+            }
+        }
+    }
+
+    main();
+</script>
+</body>
+</html>

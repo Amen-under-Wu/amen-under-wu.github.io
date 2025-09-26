@@ -67,7 +67,7 @@
         let res_str = "";
         for (let key in res_list) {
             let val = res_list[key];
-            res_str += `<div class="w3-panel w3-${val[1] === checking ? "yellow" : "light-green"}"><h4><a href="https://biupiukiu.net${val[0]}">biupiukiu.net${val[0]}</a></h4><p>最后更新于：${val[1] === checking ? checking : my_format(val[1])}</p></div>`;
+            res_str += `<div class="w3-panel w3-${val[1] === checking ? "yellow" : "light-green"}"><h4><a href="https://biupiukiu.net${val[0]}">biupiukiu.net${val[0]}</a></h4><p>最后修改于：${val[1] === checking ? checking : my_format(val[1])}</p></div>`;
         }
         document.getElementById("note-box").innerHTML = res_str;
     }

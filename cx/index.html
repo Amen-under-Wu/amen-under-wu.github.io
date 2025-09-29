@@ -14,7 +14,7 @@
         }
         .my-card::before {
             color: gray;
-            content:attr(title);
+            content:attr(content);
             position:absolute;
             left:50%;
             transform:translateX(-50%);
@@ -51,15 +51,15 @@
         <h2 class="w3-wide">程序</h2>
         <div class="w3-row w3-padding-16">
             <div class="w3-container w3-half">
-                <div class="my-card" title="玄学玩具">
+                <div class="my-card" content="玄学玩具">
                     <p><i>注：程序运行结果和现实没有关联</i></p>
-                    <p><a href="ghostvalley.html" class="w4-button">鬼谷子姻缘测试</a></p>
-                    <p><a href="medic.html" class="w4-button">六爻病情占卜</a></p>
+                    <p class="w3-wide"><a href="ghostvalley.html" class="w4-button">鬼谷子姻缘测试</a></p>
+                    <p class="w3-wide"><a href="medic.html" class="w4-button">六爻病情占卜</a></p>
                 </div>
             </div>
             <div class="w3-container w3-half">
-                <div class="my-card" title="网络技术">
-                    <p><a href="crawler.html" class="w4-button">小站更新监测器</a></p>
+                <div class="my-card" content="网络技术">
+                    <p class="w3-wide"><a href="crawler.html" class="w4-button">小站更新监测器</a></p>
                 </div>
             </div>
         </div>

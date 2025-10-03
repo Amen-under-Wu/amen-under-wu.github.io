@@ -73,9 +73,10 @@
     }
 
     async function main() {
-        let ip = "web-workshop-homework-by-fyh.site";
+        let ip = "amen-under-wu.top";
         let res_obj = {"/index.html" : checking};
         let flag = true;
+        let init_flag = true;
         while (flag) {
             update_box(res_obj);
             flag = false;
@@ -98,10 +99,15 @@
                             res_obj[key] = false;
                         }
                         break;
+                        init_flag = false;
                     }
                     catch (err) {
                         console.error(err);
                         res_obj[key] = undefined;
+                        if (init_flag) {
+                            document.getElementById("note-box").innerHTML = '<div class="w3-panel w3-red"><h4>监测器后端维护中</h4><p>敬请期待</p></div>';
+                            return;
+                        }
                     }
                 }
             }

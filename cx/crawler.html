@@ -72,8 +72,30 @@
         document.getElementById("note-box").innerHTML = res_str;
     }
 
+    async function get_url(url) {
+        try {
+            let res = await axios.get(`https://cors-anywhere.mayx.eu.org/?${url}`);
+            let $html = $(res.data);
+            let links = $html.find('a').map(function() {
+                return $(this).attr('href');
+            }).get(); // .get() 将 jQuery 对象转换为普通数组
+
+            const responseData = {
+                "headers": res.headers,
+                "status_code": res.status,
+                "data": res.data,
+                "links" : links
+            };
+            console.log(responseData);
+
+            return responseData;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+
     async function main() {
-        let ip = "amen-under-wu.top";
         let res_obj = {"/index.html" : checking};
         let flag = true;
         let init_flag = true;
@@ -84,8 +106,7 @@
                 if (res_obj[key] === checking) {
                     flag = true;
                     try {
-                        let response = await axios.get(`https://${ip}:20249/get-bpk-info?loc=${key}`);
-                        let res_data = response.data;
+                        let res_data = await get_url(`https://biupiukiu.net${key}`);
                         if (res_data.status_code === 200) {
                             res_obj[key] = res_data.headers["last-modified"];
                             for (let i = 0; i < res_data.links.length; ++i) {

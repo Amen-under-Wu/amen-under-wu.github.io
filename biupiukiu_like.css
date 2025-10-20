@@ -2,6 +2,9 @@ body {font-family: "Lato", sans-serif}
 .mySlides {display: none}
 .xsTxt, #content-box p {text-align: justify; font-size: 14px; text-indent: 2em;}
 #content-box li {text-align: justify; font-size: 14px;}
+#content-box td {text-align: justify; border: black solid 1px}
+#content-box th {border: black solid 1px;}
+#content-box table {border: black solid 3px; border-collapse: collapse}
 .xsDate {text-align: right; font-size: 14px;}
 .w4-button:hover{color: #ff7f24!important;background-color:white!important;}
 .myNotes {width: 300px; margin: auto; font-style: italic; font-size: 12px; text-align: justify;}

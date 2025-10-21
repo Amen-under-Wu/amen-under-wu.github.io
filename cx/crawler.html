@@ -82,15 +82,12 @@
                 return $(this).attr('href');
             }).get(); // .get() 将 jQuery 对象转换为普通数组
 
-            const responseData = {
+            return {
                 "headers": res.headers,
                 "status_code": res.status,
                 "data": res.data,
-                "links" : links
+                "links": links
             };
-            console.log(responseData);
-
-            return responseData;
         } catch (error) {
             console.error(error);
             return null;

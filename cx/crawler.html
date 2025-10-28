@@ -131,7 +131,7 @@
                     }
                     catch (err) {
                         console.error(err);
-                        if (!switch_flag && init_flag) {
+                        if (!switch_flag) {
                             switch_flag = true;
                             get_from_key = async function (key) {
                                 return await get_url(`https://biupiukiu.net${key}`);

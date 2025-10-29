@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>北京路网结构</title>
+    <link rel="stylesheet" href="../biupiukiu_like.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+            display: flex;
+        }
+
+        .graph-wrapper {
+            width: 90vw;
+            max-width: 100%;
+            height: 80vh;
+            border-radius: 1rem;
+            background: radial-gradient(circle at 20% 20%, #ffffff 0%, #ffffff 60%);
+            box-shadow: 0 3px 8px rgba(0.7,0.7,0.7,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tooltip {
+            position: absolute;
+            pointer-events: none;
+            background: white;
+            color: black;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: 0.5rem;
+            line-height: 1.2;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(148,163,184,0.3);
+            min-width: 140px;
+            max-width: 220px;
+            display: none;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        line.link {
+            stroke: rgba(148,163,184,0.4);
+            stroke-width: 1.5px;
+        }
+
+        circle.node {
+            fill: #38bdf8;
+            stroke: #e0f2fe;
+            stroke-width: 1.5px;
+            cursor: grab;
+        }
+
+        circle.node:active {
+            cursor: grabbing;
+        }
+
+        text.nodelabel {
+            font-size: 10px;
+            fill: black;
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="w3-top">
+    <div class="w3-bar w3-black w3-card">
+        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right"
+           href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
+                class="fa fa-bars"></i></a>
+        <a href="../index.html" class="w3-bar-item w3-button w3-padding-large">AuW</a>
+        <a href="../cx/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">程序</a>
+        <a href="../sb/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">随笔</a>
+        <a href="../xf/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">想法</a>
+        <a href="../ll/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">联络</a>
+    </div>
+</div>
+
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+    <a href="../cx/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">程序</a>
+    <a href="../sb/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">随笔</a>
+    <a href="../xf/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">想法</a>
+    <a href="../ll/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">联络</a>
+</div>
+<div class="w3-content" style="max-width:2000px; margin-top:46px">
+    <div class="w3-container w3-content w3-center w3-padding-32" style="max-width:800px">
+        <h3 class="w3-wide">北京路网结构抽象</h3>
+        <br>
+        <div class="graph-wrapper">
+            <div id="tooltip" class="tooltip"></div>
+            <svg id="graph" width="100%" height="100%"></svg>
+        </div>
+        <br>
+    </div>
+</div>
+<script src="../bpk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script>
+    async function fetch_data() {
+        const response = await fetch("./bjnet.json");
+        return response.json();
+    }
+    function setup_graph(nodes, links) {
+        const svg = d3.select("#graph");
+        const wrapper = document.querySelector(".graph-wrapper");
+        const tooltip = document.getElementById("tooltip");
+
+        // We'll create a zoomable/pannable <g>
+        const zoomLayer = svg.append("g");
+
+        // We'll also draw a time axis (not zoom-scaled, stays fixed in screen coords)
+        const axisLayer = svg.append("g")
+            .attr("class", "axis")
+            .attr("pointer-events", "none");
+
+        // ========= 4. DRAW LINKS / NODES / LABELS =========
+        const link = zoomLayer
+            .selectAll("line.link")
+            .data(links)
+            .enter()
+            .append("line")
+            .attr("class", "link");
+
+        // group so we can move circle+label together
+        const nodeGroup = zoomLayer
+            .selectAll("g.nodegroup")
+            .data(nodes)
+            .enter()
+            .append("g")
+            .attr("class", "nodegroup");
+
+        const nodeCircle = nodeGroup
+            .append("circle")
+            .attr("class", "node")
+            .attr("r", 10);
+
+        const nodeLabel = nodeGroup
+            .append("text")
+            .attr("class", "nodelabel")
+            .attr("dx", 14)
+            .attr("dy", "0.35em")
+            .text(d => d.id);
+
+        // ========= 5. TOOLTIP (hover) =========
+        nodeGroup
+            .on("mouseover", (event, d) => {
+                tooltip.style.display = "block";
+                tooltip.innerHTML = `
+          <div style="font-weight:600; color:black; font-size:0.85rem">${d.id}</div>
+          <div style="color:#94a3b8; font-size:0.7rem; margin-top:0.25rem; line-height:1.4">
+            ${d.details === undefined ? "" : d.details}
+          </div>
+        `;
+            })
+            .on("mousemove", (event) => {
+                const bounds = wrapper.getBoundingClientRect();
+                const pad = 12;
+                const ttWidth = tooltip.offsetWidth || 160;
+                const ttHeight = tooltip.offsetHeight || 60;
+
+                let x = event.clientX - bounds.left + 12;
+                let y = event.clientY - bounds.top + 12;
+
+                if (x + ttWidth + pad > bounds.width) {
+                    x = bounds.width - ttWidth - pad;
+                }
+                if (y + ttHeight + pad > bounds.height) {
+                    y = bounds.height - ttHeight - pad;
+                }
+
+                tooltip.style.left = x + "px";
+                tooltip.style.top = y + "px";
+            })
+            .on("mouseout", () => {
+                tooltip.style.display = "none";
+            }).on("mousedown", ()=>{tooltip.style.display = "none";});
+
+        // ========= 6. DRAG BEHAVIOR =========
+        nodeGroup.call(
+            d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended)
+        );
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            // If you want released nodes to float back under the forces, uncomment:
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // ========= 7. ZOOM / PAN =========
+        // This transforms zoomLayer (nodes+links). The axis stays in screen space.
+        svg.call(
+            d3.zoom()
+                .scaleExtent([0.2, 4])
+                .on("zoom", (event) => {
+                    zoomLayer.attr("transform", event.transform);
+                })
+        );
+
+        // ========= 8. FORCES (Temporal layout) =========
+
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links)
+                .id(d => d.id)
+                .distance(80)
+                .strength(0.6)
+            ).force("x", d3.forceX(wrapper.clientWidth / 2))
+            .force("y", d3.forceY(wrapper.clientHeight / 2))
+            .force("charge", d3.forceManyBody().strength(-120))
+            .force("collision", d3.forceCollide().radius(20))
+            .alpha(1)
+            .alphaDecay(0.03);
+
+        simulation.on("tick", () => {
+            // Update link lines
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            // Update node group positions (circle + label move together)
+            nodeGroup.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        // ========= 10. RESIZE HANDLING =========
+        // On resize, we:
+        //  - update xScale + axis
+        //  - update force center line for Y
+        //  - reheat the simulation a bit so nodes adjust
+
+        window.addEventListener("resize", () => {
+            simulation.force("x", d3.forceX(wrapper.clientWidth / 2))
+                .force("y", d3.forceY(wrapper.clientHeight / 2))
+            simulation.alpha(0.5).restart();
+        });
+
+    }
+    async function main() {
+        const data = await fetch_data();
+        let nodes = [];
+        let links = [];
+        for (let j = 0; j < data.bridges.length; ++j) {
+            let path = data.bridges[j];
+            for (let i = 0; i < path.length; ++i) {
+                if (i !== 0) {
+                    links[links.length] = {
+                        source: path[i-1],
+                        target: path[i]
+                    };
+                }
+                let bridge = path[i];
+                let flag = false;
+                for (let k = 0; k < nodes.length; ++k) {
+                    let node = nodes[k];
+                    if (node.id === bridge) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    nodes[nodes.length] = {id:bridge};
+                }
+            }
+        }
+        console.log(nodes);
+        console.log(links);
+        setup_graph(nodes, links);
+    }
+    main();
+</script>
+</body>
+</html>

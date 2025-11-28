@@ -36,7 +36,6 @@
             max-width: 220px;
             display: none;
             z-index: 10;
-            white-space: nowrap;
         }
 
         line.link {
@@ -90,6 +89,7 @@
         <h3 class="w3-wide">北京路网结构抽象</h3>
         <br>
         <h5 class="w3-wide">桥梁连接图</h5>
+        <h6 class="w3-wide">注：图中桥梁<b>不</b>全是立交桥</h6>
         <br>
         <div class="graph-wrapper">
             <div id="tooltip" class="tooltip"></div>
@@ -152,7 +152,7 @@
                 tooltip.style.display = "block";
                 tooltip.innerHTML = `
           <div style="font-weight:600; color:black; font-size:0.85rem">${d.id}</div>
-          <div style="color:#94a3b8; font-size:0.7rem; margin-top:0.25rem; line-height:1.4">
+          <div style="color:#94a3b8; font-size:0.7rem; text-align: justify">
             ${d.details === undefined ? "" : d.details}
           </div>
         `;
@@ -223,10 +223,10 @@
             .force("link", d3.forceLink(links)
                 .id(d => d.id)
                 .distance(80)
-                .strength(0.6)
-            ).force("x", d3.forceX(wrapper.clientWidth / 2))
-            .force("y", d3.forceY(wrapper.clientHeight / 2))
-            .force("charge", d3.forceManyBody().strength(-120))
+                .strength(1.6)
+            )
+            .force("center", d3.forceCenter(wrapper.clientWidth / 2, wrapper.clientHeight / 2))
+            .force("charge", d3.forceManyBody().strength(-50))
             .force("collision", d3.forceCollide().radius(20))
             .alpha(1)
             .alphaDecay(0.03);
@@ -256,10 +256,64 @@
         });
 
     }
+    function rev_dir(orig_dir) {
+        let res = orig_dir;
+        res = (res.replace("N", "S") === res ? res.replace("S", "N") : res.replace("N", "S"));
+        res = (res.replace("E", "W") === res ? res.replace("W", "E") : res.replace("E", "W"));
+        return res;
+    }
+    let dir_dict = {N : "北", S : "南", E : "东", W : "西", NW : "西北", NE : "东北", SW : "西南", SE : "东南"};
+    function get_road_str(roads, rev = false) {
+        if (rev) {
+            let res = roads[roads.length - 1];
+            for (let i = 1; i < roads.length; ++i) {
+                res += "、" + roads[roads.length - i - 1];
+            }
+            return res;
+        }
+        let res = roads[0];
+        for (let i = 1; i < roads.length; ++i) {
+            res += "、" + roads[i];
+        }
+        return res;
+    }
     async function main() {
         const data = await fetch_data();
         let nodes = [];
         let links = [];
+        let bridge_dict = {};
+        for (let i = 0; i < data.roads.length; ++i) {
+            let road_name = get_road_str(data.roads[i].roadname);
+            for (let j = 0; j < data.roads[i].bridges.length; ++j) {
+                let name = data.roads[i].bridges[j];
+                if (bridge_dict[name] === undefined) {
+                    bridge_dict[name] = {};
+                }
+                if (j !== 0) {
+                    bridge_dict[name][rev_dir(data.roads[i].to_dir)] = [get_road_str(data.roads[i].roadname, true), data.roads[i].bridges[j - 1]];
+                    links[links.length] = {
+                        source: name,
+                        target: data.roads[i].bridges[j - 1]
+                    }
+                }
+                if (j !== data.roads[i].bridges.length - 1) {
+                    bridge_dict[name][data.roads[i].to_dir] = [road_name, data.roads[i].bridges[j + 1]];
+                }
+            }
+        }
+        console.log(bridge_dict)
+        for (let bridge in bridge_dict) {
+            let detail_str = "";
+            let bridge_obj = bridge_dict[bridge];
+            for (let direction in bridge_obj) {
+                detail_str += `<p>向<b>${dir_dict[direction]}</b>沿<b>${bridge_obj[direction][0]}</b>可到<b>${bridge_obj[direction][1]}</b><p>`
+            }
+            nodes[nodes.length] = {
+                id: bridge,
+                details: detail_str
+            }
+        }
+        /*
         for (let j = 0; j < data.bridges.length; ++j) {
             let path = data.bridges[j];
             for (let i = 0; i < path.length; ++i) {
@@ -282,9 +336,7 @@
                     nodes[nodes.length] = {id:bridge};
                 }
             }
-        }
-        console.log(nodes);
-        console.log(links);
+        }*/
         setup_graph(nodes, links);
     }
     main();

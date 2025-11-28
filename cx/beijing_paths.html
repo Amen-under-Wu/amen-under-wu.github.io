@@ -113,12 +113,6 @@
         // We'll create a zoomable/pannable <g>
         const zoomLayer = svg.append("g");
 
-        // We'll also draw a time axis (not zoom-scaled, stays fixed in screen coords)
-        const axisLayer = svg.append("g")
-            .attr("class", "axis")
-            .attr("pointer-events", "none");
-
-        // ========= 4. DRAW LINKS / NODES / LABELS =========
         const link = zoomLayer
             .selectAll("line.link")
             .data(links)
@@ -301,7 +295,6 @@
                 }
             }
         }
-        console.log(bridge_dict)
         for (let bridge in bridge_dict) {
             let detail_str = "";
             let bridge_obj = bridge_dict[bridge];
@@ -313,30 +306,6 @@
                 details: detail_str
             }
         }
-        /*
-        for (let j = 0; j < data.bridges.length; ++j) {
-            let path = data.bridges[j];
-            for (let i = 0; i < path.length; ++i) {
-                if (i !== 0) {
-                    links[links.length] = {
-                        source: path[i-1],
-                        target: path[i]
-                    };
-                }
-                let bridge = path[i];
-                let flag = false;
-                for (let k = 0; k < nodes.length; ++k) {
-                    let node = nodes[k];
-                    if (node.id === bridge) {
-                        flag = true;
-                        break;
-                    }
-                }
-                if (!flag) {
-                    nodes[nodes.length] = {id:bridge};
-                }
-            }
-        }*/
         setup_graph(nodes, links);
     }
     main();

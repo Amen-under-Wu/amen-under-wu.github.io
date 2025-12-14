@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="../biupiukiu_like.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
     <style>
         .card {
             max-width: 200px;
@@ -60,8 +62,27 @@
             </div>
         </div>
         <h4 class="w3-opacity"><i>yh_fengovsky@qq.com</i></h4>
+        <br>
+        <br>
+        <hr>
+        <div style="text-align: justify">
+            <h6>也可在下方留言。</h6>
+            <div id="comments"></div>
+        </div>
     </div>
 </div>
 <script src="../bpk.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: "Ov23liaVUmT09qdfhQZe",
+        clientSecret: '75eb67b7e1948cb6a26f459e6633fd562e5822e4',
+        repo: 'gitalk-comments',
+        owner: 'Amen-under-Wu',
+        admin:  ['Amen-under-Wu'],
+        id: location.pathname,
+        distractionFreeMode: true
+    })
+    gitalk.render("comments");
+</script>
 </body>
 </html>

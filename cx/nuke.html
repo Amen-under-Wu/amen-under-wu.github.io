@@ -108,7 +108,7 @@
             <button class="w3-button w3-blue" onclick="addPrecursor()">添加分组</button>
             <br>
             <br>
-            <label><b>中子平均寿命</b>（秒）</label>
+            <label><b>中子寿命</b>（秒）</label>
             <input id="l" class="w3-input w3-border" type="text">
 
             <label><b>反应性公式</b>（javascript语法）</label>
@@ -174,10 +174,10 @@
         --prec_len;
     }
     function init_data() {
-        document.getElementById("l").value = "0.084";
-        document.getElementById("rho").value = "(t > 0 ? 0.001 : 0) - 0.0 * (n - 1)";
+        document.getElementById("l").value = "0.005";
+        document.getElementById("rho").value = "(t >= 0 ? 0.0025 : 0) - 0.0 * (n - 1)";
         document.getElementById("t1").value = "0.0";
-        document.getElementById("t2").value = "1.0";
+        document.getElementById("t2").value = "10.0";
         document.getElementById("nsave").value = "100";
         let betas = [0.00021,0.00142,0.00127,0.00257,0.00075,0.00027];
         let lambdas = [0.0124,0.0305,0.1114,0.3014,1.1363,3.0137];

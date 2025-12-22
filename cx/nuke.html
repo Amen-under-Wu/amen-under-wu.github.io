@@ -366,7 +366,7 @@
     // }, 1000);
 
     window.addEventListener('resize', () => {
-        width = window.innerWidth - margin.left - margin.right;
+        width = document.getElementById("chart-container").offsetWidth - margin.left - margin.right;
         height = width * 0.6;
 
         svg
@@ -377,6 +377,7 @@
         yScale.range([height, 0]);
 
         xAxisG.attr('transform', `translate(0,${height})`);
+        xGridG.attr('transform', `translate(0,${height})`);
 
         render();
     });

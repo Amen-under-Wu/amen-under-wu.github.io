@@ -1,0 +1,15 @@
+{
+  "name": "runge-kutta",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "runge_kutta_bg.wasm",
+    "runge_kutta.js",
+    "runge_kutta.d.ts"
+  ],
+  "main": "runge_kutta.js",
+  "types": "runge_kutta.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

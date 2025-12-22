@@ -174,8 +174,8 @@
         --prec_len;
     }
     function init_data() {
-        document.getElementById("l").value = "0.005";
-        document.getElementById("rho").value = "(t >= 0 ? 0.0025 : 0) - 0.0 * (n - 1)";
+        document.getElementById("l").value = "0.0005";
+        document.getElementById("rho").value = "Math.sin(t >= 1.0 ? 0.0025 : 0) - 0.0 * (n - 1)";
         document.getElementById("t1").value = "0.0";
         document.getElementById("t2").value = "10.0";
         document.getElementById("nsave").value = "100";

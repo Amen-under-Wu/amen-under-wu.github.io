@@ -244,8 +244,6 @@
         //  - reheat the simulation a bit so nodes adjust
 
         window.addEventListener("resize", () => {
-            simulation.force("x", d3.forceX(wrapper.clientWidth / 2))
-                .force("y", d3.forceY(wrapper.clientHeight / 2))
             simulation.alpha(0.5).restart();
         });
 

@@ -1744,6 +1744,66 @@
       "roadname": ["东直门内大街"],
       "to_dir": "E",
       "bridges": ["北新桥", "东直门桥"]
+    },
+    {
+      "roadname": ["天安门广场", "前门大街", "天桥南大街"],
+      "to_dir": "S",
+      "bridges": ["外金水桥", "天桥"]
+    },
+    {
+      "roadname": ["永定门内大街"],
+      "to_dir": "S",
+      "bridges": ["天桥", "永定门桥"]
+    },
+    {
+      "roadname": ["德胜门内大街"],
+      "to_dir": "S",
+      "bridges": ["德胜门桥", "德胜桥"]
+    },
+    {
+      "roadname": ["西海南沿"],
+      "to_dir": "SE",
+      "bridges": ["积水潭桥", "德胜桥"]
+    },
+    {
+      "roadname": ["后海南沿"],
+      "to_dir": "NW",
+      "bridges": ["银锭桥", "德胜桥"]
+    },
+    {
+      "roadname": ["旧鼓楼大街"],
+      "to_dir": "N",
+      "bridges": ["银锭桥", "鼓楼桥"]
+    },
+    {
+      "roadname": ["前海东沿"],
+      "to_dir": "S",
+      "bridges": ["银锭桥", "万宁桥"]
+    },
+    {
+      "roadname": ["前海南沿"],
+      "to_dir": "NE",
+      "bridges": ["淾祥桥", "万宁桥"]
+    },
+    {
+      "roadname": ["北海"],
+      "to_dir": "S",
+      "bridges": ["淾祥桥", "北海大桥"]
+    },
+    {
+      "roadname": ["景山前街", "文津街"],
+      "to_dir": "W",
+      "bridges": ["神武门桥", "北海大桥"]
+    },
+    {
+      "roadname": ["金水河"],
+      "to_dir": "S",
+      "bridges": ["神武门桥", "内金水桥"]
+    },
+    {
+      "roadname": ["中轴线"],
+      "to_dir": "N",
+      "bridges": ["外金水桥", "内金水桥"]
     }
   ],
   "station_loc": [

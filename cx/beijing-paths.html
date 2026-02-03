@@ -271,6 +271,7 @@
     }
     async function main() {
         const data = await fetch_data();
+        data.roads.sort(() => Math.random() - 0.5);
         let nodes = [];
         let links = [];
         let bridge_dict = {};
@@ -305,6 +306,9 @@
             }
         }
         setup_graph(nodes, links);
+        let search_param = new URLSearchParams(window.location.search);
+        if (search_param.get("debug") !== null)
+            console.log(nodes)
     }
     main();
 </script>

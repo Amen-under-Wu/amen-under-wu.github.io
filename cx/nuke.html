@@ -1,12 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>点堆动力学方程数值解 | Amen-under-Wu</title>
-    <link rel="stylesheet" href="../biupiukiu_like.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         svg { font-family: sans-serif; }
         .dot { fill: #5b8cff; }
@@ -17,11 +14,9 @@
             stroke-opacity: 0.8;
             shape-rendering: crispEdges;
         }
-
         .grid path {
             display: none;
         }
-
     </style>
 </head>
 
@@ -48,99 +43,80 @@
     });
 </script>
 <body>
-
-<div class="w3-top">
-    <div class="w3-bar w3-black w3-card">
-        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right"
-           href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
-                class="fa fa-bars"></i></a>
-        <a href="../index.html" class="w3-bar-item w3-button w3-padding-large">AuW</a>
-        <a href="../cx/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">程序</a>
-        <a href="../sb/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">随笔</a>
-        <a href="../xf/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">想法</a>
-        <a href="../ll/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">联络</a>
+<div id="main-content">
+    <h2 class="w3-wide">点堆动力学方程</h2>
+    <br>
+    <div style="margin: auto">
+        <p class="myNotes">双宫绸的核电站，颓圮于一个滚烫的海。</p>
+        <p class="myNotes" style="text-align: right">——彭（引自<a href="https://biupiukiu.net/xs/rgwdnekzbjznebswan.html">此小说</a>）</p>
     </div>
-</div>
-
-<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
-    <a href="../cx/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">程序</a>
-    <a href="../sb/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">随笔</a>
-    <a href="../xf/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">想法</a>
-    <a href="../ll/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">联络</a>
-</div>
-<div class="w3-content" style="max-width:2000px; margin-top:46px">
-    <div class="w3-container w3-content w3-center w3-padding-32" style="max-width:800px" id="xf">
-        <h2 class="w3-wide">点堆动力学方程</h2>
+    <br>
+    <p class="xsTxt">此处展示了一个求解点堆动力学方程的demo。点堆模型是计算反应堆瞬态行为的一个重要模型，通常求解的六组缓发中子对应的点堆方程为：
+        $$\begin{cases}
+        \displaystyle \frac{\mathrm d n(t)}{\mathrm d t}=\frac{\rho(t)-\beta_{\mathrm{eff}}}{\Lambda}n+\sum_{i=1}^6 \lambda_i C_i\\
+        \displaystyle \frac{\mathrm d C_i(t)}{\mathrm d t} = \frac{\beta_{i,\mathrm{eff}}}{\Lambda}n-\lambda_i C_i
+        \end{cases}$$
+    </p>
+    <p class="xsTxt">反应堆的典型参数已预先设置好，点击“开始计算”按钮即可绘制中子密度随时间的变化曲线。</p>
+    <p class="xsTxt">Rust源码可在<a href="https://github.com/Amen-under-Wu/point-reactor">此处</a>获取。</p>
+    <hr>
+    <div id="editor" class="w3-panel w3-light-gray w3-round w3-padding-24" style="text-align: left; display: none">
+        <label><b>求解方法</b></label>
         <br>
-        <div style="margin: auto">
-            <p class="myNotes">双宫绸的核电站，颓圮于一个滚烫的海。</p>
-            <p class="myNotes" style="text-align: right">——彭（引自<a href="https://biupiukiu.net/xs/rgwdnekzbjznebswan.html">此小说</a>）</p>
+        <input id="ross" class="w3-radio" type="radio" name="method" checked>
+        <label>四阶刚性稳定Rosenbrock法</label>
+        <br>
+        <input class="w3-radio" type="radio" name="method">
+        <label>八阶变步长Runge-Kutta法（不稳定，仅供演示用）</label>
+        <br>
+        <br>
+        <label><b>起始时间</b>（秒）</label>
+        <input id="t1" class="w3-input w3-border" type="text">
+        <label><b>终止时间</b>（秒）</label>
+        <input id="t2" class="w3-input w3-border" type="text">
+        <label><b>数据点数量</b>（设置为-1则按步长控制自动取点）</label>
+        <input id="nsave" class="w3-input w3-border" type="text">
+        <br>
+        <b>先驱核分组</b>
+        <div id="precursors">
         </div>
+        <button class="w3-button w3-blue" onclick="addPrecursor()">添加分组</button>
         <br>
-        <p class="xsTxt">此处展示了一个求解点堆动力学方程的demo。点堆模型是计算反应堆瞬态行为的一个重要模型，通常求解的六组缓发中子对应的点堆方程为：
-            $$\begin{cases}
-            \displaystyle \frac{\mathrm d n(t)}{\mathrm d t}=\frac{\rho(t)-\beta_{\mathrm{eff}}}{\Lambda}n+\sum_{i=1}^6 \lambda_i C_i\\
-            \displaystyle \frac{\mathrm d C_i(t)}{\mathrm d t} = \frac{\beta_{i,\mathrm{eff}}}{\Lambda}n-\lambda_i C_i
-            \end{cases}$$
-        </p>
-        <p class="xsTxt">反应堆的典型参数已预先设置好，点击“开始计算”按钮即可绘制中子密度随时间的变化曲线。</p>
-        <p class="xsTxt">Rust源码可在<a href="https://github.com/Amen-under-Wu/point-reactor">此处</a>获取。</p>
-        <hr>
-        <div id="editor" class="w3-panel w3-light-gray w3-round w3-padding-24" style="text-align: left; display: none">
-            <label><b>求解方法</b></label>
-            <br>
-            <input id="ross" class="w3-radio" type="radio" name="method" checked>
-            <label>四阶刚性稳定Rosenbrock法</label>
-            <br>
-            <input class="w3-radio" type="radio" name="method">
-            <label>八阶变步长Runge-Kutta法（不稳定，仅供演示用）</label>
-            <br>
-            <br>
-            <label><b>起始时间</b>（秒）</label>
-            <input id="t1" class="w3-input w3-border" type="text">
-            <label><b>终止时间</b>（秒）</label>
-            <input id="t2" class="w3-input w3-border" type="text">
-            <label><b>数据点数量</b>（设置为-1则按步长控制自动取点）</label>
-            <input id="nsave" class="w3-input w3-border" type="text">
-            <br>
-            <b>先驱核分组</b>
-            <div id="precursors">
-            </div>
-            <button class="w3-button w3-blue" onclick="addPrecursor()">添加分组</button>
-            <br>
-            <br>
-            <label><b>中子寿命</b>（秒）</label>
-            <input id="l" class="w3-input w3-border" type="text">
+        <br>
+        <label><b>中子寿命</b>（秒）</label>
+        <input id="l" class="w3-input w3-border" type="text">
 
-            <label><b>反应性公式</b>（javascript语法）</label>
-            <input id="rho" class="w3-input w3-border" type="text">
+        <label><b>反应性公式</b>（javascript语法）</label>
+        <input id="rho" class="w3-input w3-border" type="text">
 
-            <label><b>初始条件</b></label>
-            <br>
-            <input id="balance" class="w3-radio" type="radio" name="init_cond" value="balance" onclick="document.getElementById('custom_init').style.display = 'none'" checked>
-            <label>稳态</label>
+        <label><b>初始条件</b></label>
+        <br>
+        <input id="balance" class="w3-radio" type="radio" name="init_cond" value="balance" onclick="document.getElementById('custom_init').style.display = 'none'" checked>
+        <label>稳态</label>
 
-            <input class="w3-radio" type="radio" name="init_cond" value="custom" onclick="document.getElementById('custom_init').style.display = 'block'">
-            <label>自定义</label>
-            <input class="w3-input w3-border" type="text" id="custom_init" style="display:none">
-        </div>
-        <br>
-        <div id="buttons">
-            <button class="w3-button w3-green" onclick="window.my_main()">开始计算</button>
-            <button class="w3-button w3-blue" onclick="toggleDisplay('editor')">编辑参数</button>
-        </div>
-        <br>
-        <div id="chart-container">
-            <svg id="chart"></svg>
-        </div>
-        <button class="w3-button w3-cyan" onclick="show_data()">显示文本格式数据</button>
-        <br>
-        <br>
-        <textarea id="data" class="w3-input w3-border"></textarea>
+        <input class="w3-radio" type="radio" name="init_cond" value="custom" onclick="document.getElementById('custom_init').style.display = 'block'">
+        <label>自定义</label>
+        <input class="w3-input w3-border" type="text" id="custom_init" style="display:none">
     </div>
+    <br>
+    <div id="buttons">
+        <button class="w3-button w3-green" onclick="window.my_main()">开始计算</button>
+        <button class="w3-button w3-blue" onclick="toggleDisplay('editor')">编辑参数</button>
+    </div>
+    <br>
+    <div id="chart-container">
+        <svg id="chart"></svg>
+    </div>
+    <button class="w3-button w3-cyan" onclick="show_data()">显示文本格式数据</button>
+    <br>
+    <br>
+    <textarea id="data" class="w3-input w3-border"></textarea>
 </div>
 
+<script src="/main.js"></script>
 <script>
+    useTemplate("biupiukiu");
+
     function show_data() {
         document.getElementById("data").value = JSON.stringify(data);
     }
@@ -393,8 +369,6 @@
 
         render();
     });
-
 </script>
-<script src="../bpk.js"></script>
 </body>
 </html>

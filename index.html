@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <title>Amen-under-Wu个人网页</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="biupiukiu_like.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         body {
             font-family: "Lato", sans-serif
@@ -23,38 +19,16 @@
     </style>
 </head>
 <body>
-
-<!-- Navbar -->
-<div class="w3-top">
-    <div class="w3-bar w3-black w3-card">
-        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right"
-           href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i
-                class="fa fa-bars"></i></a>
-        <a href="index.html" class="w3-bar-item w3-button w3-padding-large">AuW</a>
-        <a href="cx/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">程序</a>
-        <a href="sb/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">随笔</a>
-        <a href="xf/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">想法</a>
-        <a href="ll/index.html" class="w3-bar-item w3-button w3-padding-large w3-hide-small" target="_self">联络</a>
-    </div>
-</div>
-
-<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
-    <a href="cx/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">程序</a>
-    <a href="sb/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">随笔</a>
-    <a href="xf/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">想法</a>
-    <a href="ll/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">联络</a>
-</div>
-
-<!-- Page content -->
-<div class="w3-content" style="max-width:800px;margin-top:56px">
+<div id="main-content">
     <div class="w3-display-container w3-center">
         <h4 id="coverTxt1"></h4>
-        <img class="w3-round" id="coverPic" onclick="window.location.reload();" alt="cover-picture" width="300px"
-             src="#">
+        <img class="w3-round" id="coverPic" onclick="window.location.reload();" alt="cover-picture" width="300px" src="#">
         <p id="coverTxt2"></p>
     </div>
 </div>
+<script src="/main.js"></script>
 <script>
+    useTemplate("biupiukiu");
     window.onload = chooseCover;
     let coverTxt = [
         "不能究物理 2025.6.-看那颗头，像块起褶儿的幽灵",
@@ -81,16 +55,6 @@
         document.getElementById("coverPic").src = "cover/" + randomNum + ".jpg";
         document.getElementById("coverTxt1").innerHTML = tempArray[0];
         document.getElementById("coverTxt2").innerHTML = tempArray[1];
-    }
-
-    // Used to toggle the menu on small screens when clicking on the menu button
-    function myFunction() {
-        let x = document.getElementById("navDemo");
-        if (x.className.indexOf("w3-show") === -1) {
-            x.className += " w3-show";
-        } else {
-            x.className = x.className.replace(" w3-show", "");
-        }
     }
 </script>
 </body>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.11.1/brython.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.11.1/brython_stdlib.js"></script>
+    <title>在线python解释器 | Amen-under-Wu</title>
+</head>
+
+<body onload="brython()">
+<div id="main-content">
+    <h3 class="w3-wide">PYTHON 解释器</h3>
+    <textarea id="code">print("Hello, World!")</textarea>
+    <br>
+    <button id="run">运行</button>
+    <br>
+    <pre id="stdout"></pre>
+</div>
+<script src="/main.js"></script>
+<script type="text/python">
+from browser import document
+def run(*args):
+    code = document["code"].value
+    stdout = document["stdout"]
+    
+    import sys
+    from io import StringIO
+    
+    sys.stdout = StringIO()
+    try:
+        exec(code)
+        output = sys.stdout.getvalue()
+        stdout.textContent = output
+    except Exception as e:
+        stdout.textContent = str(e)
+document["run"].bind("click", run)
+</script>
+<script>
+    useTemplate("biupiukiu");
+</script>
+</body>
+</html>

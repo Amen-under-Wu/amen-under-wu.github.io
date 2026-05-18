@@ -1,6 +1,7 @@
 body {font-family: "Lato", sans-serif}
 .mySlides {display: none}
 .xsTxt, #md-box p, .align-box p {text-align: justify; font-size: 14px; text-indent: 2em;}
+.align-box {padding: 10px;}
 #md-box li {text-align: justify; font-size: 14px;}
 #md-box td {text-align: justify; border: black solid 1px}
 #md-box th {border: black solid 1px;}

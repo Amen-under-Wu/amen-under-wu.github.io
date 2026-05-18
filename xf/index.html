@@ -10,21 +10,45 @@
 <div id="main-content">
     <h2 class="w3-wide">想法</h2>
     <br>
-    <div class="w3-card w3-round-large">
-        <header class="w3-light-gray"><h4>周二同人游戏：窃听疑云</h4></header>
-        <ul class="">
-            <li style="text-align: justify">核心玩法：调节天线、使用示波器、驾驶房车、连接电路、使用脊椎</li>
-            <li style="text-align: justify">电路运行、天线接收模拟信号的过程基于真实物理模型进行仿真</li>
-            <li style="text-align: justify">天线可接收模拟电视信号，解调可得像素动画</li>
-        </ul>
-        <p><i>TODO: 入门业余无线电</i></p>
-        <footer class="w3-light-gray"><br></footer>
+    <p class="w4-button xsTxt" onclick="toggleDisplay('hns')">科学家捉迷藏创意二则</p>
+    <div id="hns" class="align-box w3-card w3-round-large" style="display:none">
+        <br>
+        <h4>科学家捉迷藏创意二则</h4>
+        <br>
+        <p>天堂里，爱因斯坦又在和一群科学家捉迷藏。</p>
+        <p>爱因斯坦数到100，睁开眼看到焦耳还没跑远，便冲上去喊道：“我抓住你了，焦耳！”</p>
+        <p>焦耳不慌不忙地掏出一个体重秤，站上去说道：“不对，我现在不是焦耳，我是‘焦耳每千克’。”</p>
+        <p>爱因斯坦说道：“我知道了，你是戈瑞！我抓住你了！”</p>
+        <p>戈瑞在一旁探出脑袋叫道：“不对，他不是戈瑞！”</p>
+        <p>“为什么？”爱因斯坦问。</p>
+        <p>“你抓的人<b>相当</b>于‘焦耳每千克’，所以应该按照当量算，你抓住的是希沃特！”</p>
+        <hr>
+        <p>爱因斯坦一转身，看到了贝克勒尔躺在地上，喊道：“我抓住你了，贝克勒尔！”</p>
+        <p>贝克勒尔慢悠悠地翻了个身，说道：“不对。”</p>
+        <p>“不对？我可看清楚了，这儿只有你一个人，你身上也什么都没带，你就是贝克勒尔。”</p>
+        <p>贝克勒尔说：“我问你，按国际单位制，我是什么量纲？”</p>
+        <p>“秒的倒数啊。”爱因斯坦答道。</p>
+        <p>“这就对了。”贝克勒尔说，“秒的倒数，你抓住的是赫兹。”</p>
+        <br>
+        <div style="text-align:right;padding-right:10px">
+            <p style="text-align:right">2026年5月</p>
+        </div>
+        <br>
     </div>
     <br>
 </div>
 <script src="/main.js"></script>
 <script>
     useTemplate("biupiukiu");
+    function toggleDisplay(i) {
+        let x = document.getElementById(i);
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+
 </script>
 </body>
 </html>

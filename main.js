@@ -54,10 +54,10 @@ function useBpk(content) {
         </div>
 
         <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
-            <a href="cx/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="menuFunction()">程序</a>
-            <a href="sb/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="menuFunction()">随笔</a>
-            <a href="xf/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="menuFunction()">想法</a>
-            <a href="ll/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="menuFunction()">联络</a>
+            <a href="/cx/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="menuFunction()">程序</a>
+            <a href="/sb/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="menuFunction()">随笔</a>
+            <a href="/xf/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="menuFunction()">想法</a>
+            <a href="/ll/index.html" class="w3-bar-item w3-button w3-padding-large" onclick="menuFunction()">联络</a>
         </div>
 
         <!-- Page content -->
